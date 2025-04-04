@@ -2,7 +2,7 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
-	"insurance/iternal/service"
+	"insurance/internal/service"
 	"net/http"
 )
 

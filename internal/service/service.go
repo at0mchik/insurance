@@ -1,6 +1,6 @@
 package service
 
-import "insurance/iternal/repository"
+import "insurance/internal/repository"
 
 type Service struct {
 }

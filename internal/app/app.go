@@ -5,10 +5,10 @@ import (
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"github.com/sirupsen/logrus"
-	"insurance/iternal/config"
-	"insurance/iternal/handler"
-	"insurance/iternal/repository"
-	"insurance/iternal/service"
+	"insurance/internal/config"
+	"insurance/internal/handler"
+	"insurance/internal/repository"
+	"insurance/internal/service"
 	"insurance/pkg/server"
 )
 
