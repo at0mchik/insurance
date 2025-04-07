@@ -18,7 +18,7 @@ func Run(configPath string) {
 
 	cfg := config.GetConfig(configPath)
 
-	db, err := sqlx.Open("postgres", fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=%s",
+	db, err := sqlx.Connect("postgres", fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=%s",
 		cfg.DB.Host, cfg.DB.Port, cfg.DB.Username, cfg.DB.DBName, cfg.DB.Password, cfg.DB.SSLMode))
 
 	if err != nil {
@@ -35,3 +35,5 @@ func Run(configPath string) {
 		logrus.Fatalf("error while running http server: %s", err.Error())
 	}
 }
+
+// some code for test
