@@ -5,6 +5,10 @@ import (
 	"insurance/internal/entity"
 )
 
+const (
+	usersTable = "users"
+)
+
 type User interface {
 	CreateUser(user entity.User) (int, error)
 	GetAllUsers() ([]entity.User, error)
@@ -17,5 +21,7 @@ type Repository struct {
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
-	return &Repository{}
+	return &Repository{
+		User: NewUserPostgres(db),
+	}
 }

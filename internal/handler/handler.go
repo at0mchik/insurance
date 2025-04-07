@@ -26,11 +26,11 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	{
 		user := api.Group("/user")
 		{
-			user.POST("/")
-			user.GET("/")
-			user.GET("/:id")
-			user.DELETE("/:id")
-			user.PUT("/:id")
+			user.POST("/", h.CreateUser)
+			user.GET("/", h.GetAllUsers)
+			user.GET("/:id", h.GetUserById)
+			user.DELETE("/:id", h.DeleteUserById)
+			user.PUT("/:id", h.UpdateUserById)
 		}
 	}
 

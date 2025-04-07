@@ -22,6 +22,10 @@ type Config struct {
 	Server struct {
 		Port string
 	}
+
+	Pkg struct {
+		Salt string
+	}
 }
 
 func initConfig(configPath string) error {
@@ -58,6 +62,8 @@ func GetConfig(configPath string) *Config {
 		instance.DB.SSLMode = viper.GetString("db.sslmode")
 
 		instance.Server.Port = viper.GetString("server.port")
+
+		instance.Pkg.Salt = os.Getenv("PASS_SALT")
 
 		logrus.Infof("port %s", instance.Server.Port)
 	})

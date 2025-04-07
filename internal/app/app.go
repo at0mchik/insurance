@@ -9,6 +9,7 @@ import (
 	"insurance/internal/handler"
 	"insurance/internal/repository"
 	"insurance/internal/service"
+	"insurance/pkg/auth"
 	"insurance/pkg/server"
 )
 
@@ -28,6 +29,7 @@ func Run(configPath string) {
 	repos := repository.NewRepository(db)
 	services := service.NewService(repos)
 	handlers := handler.NewHandler(services)
+	auth.SetSalt(cfg.Pkg.Salt)
 	logrus.Info("repositories, services, handlers initialized")
 
 	srv := new(server.Server)
@@ -35,5 +37,3 @@ func Run(configPath string) {
 		logrus.Fatalf("error while running http server: %s", err.Error())
 	}
 }
-
-// some code for test

@@ -1,5 +1,7 @@
 package entity
 
+import "errors"
+
 type User struct {
 	Id             int    `json:"id" db:"id"`
 	Name           string `json:"name" binding:"required" db:"name"`
@@ -15,12 +17,31 @@ type User struct {
 }
 
 type UpdateUserInput struct {
-	Name           string `json:"name"`
-	Password       string `json:"password"`
-	Gender         string `json:"gender"`
-	Phone          string `json:"phone"`
-	Email          string `json:"email"`
-	PassportNumber string `json:"passport_number"`
-	Age            int    `json:"age"`
-	Info           string `json:"info"`
+	Name           *string `json:"name"`
+	Password       *string `json:"password"`
+	Gender         *string `json:"gender"`
+	Phone          *string `json:"phone"`
+	PassportNumber *string `json:"passport_number"`
+	Age            *int    `json:"age"`
+	Info           *string `json:"info"`
+}
+
+func (i UpdateUserInput) Validate() error {
+	if i.Name == nil && i.Password == nil {
+		errors.New("empty update input")
+	}
+	return nil
+}
+
+var UserRoles []string
+
+const (
+	RoleAdmin    = "admin"
+	RoleClient   = "client"
+	RoleManager  = "manager"
+	RoleAssessor = "assessor"
+)
+
+func init() {
+	UserRoles = []string{RoleClient, RoleAdmin, RoleManager, RoleAssessor}
 }
