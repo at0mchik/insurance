@@ -24,7 +24,8 @@ type Config struct {
 	}
 
 	Pkg struct {
-		Salt string
+		Salt   string
+		JwtKey string
 	}
 }
 
@@ -64,6 +65,7 @@ func GetConfig(configPath string) *Config {
 		instance.Server.Port = viper.GetString("server.port")
 
 		instance.Pkg.Salt = os.Getenv("PASS_SALT")
+		instance.Pkg.JwtKey = os.Getenv("JWT_KEY")
 
 		logrus.Infof("port %s", instance.Server.Port)
 	})

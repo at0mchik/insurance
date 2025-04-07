@@ -30,6 +30,7 @@ func Run(configPath string) {
 	services := service.NewService(repos)
 	handlers := handler.NewHandler(services)
 	auth.SetSalt(cfg.Pkg.Salt)
+	auth.SetSigningKey(cfg.Pkg.JwtKey)
 	logrus.Info("repositories, services, handlers initialized")
 
 	srv := new(server.Server)

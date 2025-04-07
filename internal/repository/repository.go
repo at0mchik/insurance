@@ -16,12 +16,20 @@ type User interface {
 	DeleteUserById(id int) error
 	UpdateUserById(id int, input entity.UpdateUserInput) error
 }
+
+type Authorization interface {
+	SignUp(user entity.User) (int, error)
+	SignIn(username, password string) (entity.User, error)
+}
+
 type Repository struct {
 	User
+	Authorization
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
-		User: NewUserPostgres(db),
+		User:          NewUserPostgres(db),
+		Authorization: NewAuthPostgres(db),
 	}
 }

@@ -13,12 +13,19 @@ type User interface {
 	UpdateUserById(id int, input entity.UpdateUserInput) error
 }
 
+type Authorization interface {
+	SignUp(user entity.User) (int, error)
+	SignIn(username, password string) (string, error)
+}
+
 type Service struct {
 	User
+	Authorization
 }
 
 func NewService(repos *repository.Repository) *Service {
 	return &Service{
-		User: NewUserService(repos),
+		User:          NewUserService(repos),
+		Authorization: NewAuthService(repos),
 	}
 }

@@ -32,6 +32,12 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			user.DELETE("/:id", h.DeleteUserById)
 			user.PUT("/:id", h.UpdateUserById)
 		}
+		auth := api.Group("/auth")
+		{
+			auth.POST("/sign-in", h.SignIn) //authentication
+			auth.POST("/sign-up", h.SignUp) //registration
+			auth.GET("/parse", h.UserIdentity)
+		}
 	}
 
 	return router
