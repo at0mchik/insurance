@@ -33,7 +33,7 @@ func (i UpdateUserInput) Validate() error {
 	return nil
 }
 
-var UserRoles []string
+var UserRoles map[string]bool
 
 const (
 	RoleAdmin    = "admin"
@@ -43,5 +43,5 @@ const (
 )
 
 func init() {
-	UserRoles = []string{RoleClient, RoleAdmin, RoleManager, RoleAssessor}
+	UserRoles = map[string]bool{RoleClient: true, RoleAdmin: true, RoleManager: true, RoleAssessor: true}
 }

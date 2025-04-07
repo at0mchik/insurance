@@ -40,7 +40,7 @@ func (h *Handler) CreateUser(c *gin.Context) {
 	})
 }
 
-type getAllListsResponse struct {
+type getAllUsersResponse struct {
 	Data []entity.User `json:"data"`
 }
 
@@ -63,7 +63,7 @@ func (h *Handler) GetAllUsers(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, getAllListsResponse{
+	c.JSON(http.StatusOK, getAllUsersResponse{
 		Data: users,
 	})
 }

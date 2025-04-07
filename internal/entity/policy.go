@@ -1,6 +1,9 @@
 package entity
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 type Policy struct {
 	Id         int       `json:"id" db:"id"`
@@ -9,4 +12,41 @@ type Policy struct {
 	StartDate  time.Time `json:"start_date" binding:"required" db:"start_date"`
 	EndDate    time.Time `json:"end_date" binding:"required" db:"end_date"`
 	Premium    int       `json:"premium" binding:"required" db:"premium"`
+}
+
+type PolicyRequest struct {
+	Type      string          `json:"type"`
+	StartDate string          `json:"start_date"`
+	EndDate   string          `json:"end_date"`
+	Premium   int             `json:"premium"`
+	Details   json.RawMessage `json:"details"`
+}
+
+type PolicyResponse struct {
+	ID        int             `json:"id"`
+	ClientID  int             `json:"client_id"`
+	Type      string          `json:"type"`
+	StartDate string          `json:"start_date"`
+	EndDate   string          `json:"end_date"`
+	Premium   int             `json:"premium"`
+	Details   json.RawMessage `json:"details"`
+}
+
+type UpdatePolicyInput struct {
+	StartDate *time.Time `json:"start_date"`
+	EndDate   *time.Time `json:"end_date"`
+	Premium   *int       `json:"premium"`
+}
+
+const (
+	TypeCar       = "car"
+	TypeApartment = "apartment"
+	TypeHealth    = "health"
+	TypeCrypto    = "crypto"
+)
+
+var TypePolicy map[string]bool
+
+func init() {
+	TypePolicy = map[string]bool{TypeCar: true, TypeApartment: true, TypeHealth: true, TypeCrypto: true}
 }

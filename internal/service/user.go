@@ -16,14 +16,7 @@ func NewUserService(repo repository.User) *UserService {
 }
 
 func (s *UserService) CreateUser(user entity.User) (int, error) {
-	validRole := false
-	for _, role := range entity.UserRoles {
-		if role == user.Role {
-			validRole = true
-			break
-		}
-	}
-	if !validRole {
+	if !entity.UserRoles[user.Role] {
 		return 0, errors.New("invalid role")
 	}
 

@@ -38,6 +38,14 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			auth.POST("/sign-up", h.SignUp) //registration
 			//auth.GET("/parse", h.UserIdentity) //uncomment c.JSON in UserIdentity
 		}
+		policy := api.Group("/policy", h.UserIdentity)
+		{
+			policy.POST("/", h.CreatePolicy)
+			policy.GET("/user-token", h.GetAllPoliciesByUser)
+			//policy.GET("/:id")
+			//policy.DELETE("/:id")
+			//policy.PUT("/:id")
+		}
 	}
 
 	return router
