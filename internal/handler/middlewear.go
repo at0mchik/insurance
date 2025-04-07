@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"insurance/pkg/auth"
 	"insurance/pkg/response"
@@ -35,8 +36,32 @@ func (h *Handler) UserIdentity(c *gin.Context) {
 	c.Set(userCtxId, userId)
 	c.Set(userCtxRole, userRole)
 
-	c.JSON(http.StatusOK, map[string]interface{}{
-		"id":   userId,
-		"role": userRole,
-	})
+	//c.JSON(http.StatusOK, map[string]interface{}{
+	//	"id":   userId,
+	//	"role": userRole,
+	//})
+}
+
+func getUserCtx(c *gin.Context) (int, string, error) {
+	id, ok := c.Get(userCtxId)
+	if !ok {
+		return 0, "", errors.New("user id not found")
+	}
+
+	idInt, ok := id.(int)
+	if !ok {
+		return 0, "", errors.New("user id is of invalid type")
+	}
+
+	role, ok := c.Get(userCtxRole)
+	if !ok {
+		return 0, "", errors.New("user role not found")
+	}
+
+	roleStr, ok := role.(string)
+	if !ok {
+		return 0, "", errors.New("user role is of invalid type")
+	}
+
+	return idInt, roleStr, nil
 }

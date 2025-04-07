@@ -10,6 +10,17 @@ import (
 )
 
 func (h *Handler) CreateUser(c *gin.Context) {
+	_, role, err := getUserCtx(c)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if role != entity.RoleAdmin {
+		response.NewErrorResponse(c, http.StatusUnauthorized, "role not admin")
+		return
+	}
+
 	var input entity.User
 
 	if err := c.BindJSON(&input); err != nil {
@@ -34,6 +45,17 @@ type getAllListsResponse struct {
 }
 
 func (h *Handler) GetAllUsers(c *gin.Context) {
+	_, role, err := getUserCtx(c)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if role != entity.RoleAdmin {
+		response.NewErrorResponse(c, http.StatusUnauthorized, "role not admin")
+		return
+	}
+
 	users, err := h.services.User.GetAllUsers()
 
 	if err != nil {
@@ -47,6 +69,17 @@ func (h *Handler) GetAllUsers(c *gin.Context) {
 }
 
 func (h *Handler) GetUserById(c *gin.Context) {
+	_, role, err := getUserCtx(c)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if role != entity.RoleAdmin {
+		response.NewErrorResponse(c, http.StatusUnauthorized, "role not admin")
+		return
+	}
+
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusBadRequest, "invalid id param")
@@ -63,9 +96,20 @@ func (h *Handler) GetUserById(c *gin.Context) {
 }
 
 func (h *Handler) DeleteUserById(c *gin.Context) {
+	userId, role, err := getUserCtx(c)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusBadRequest, "invalid id param")
+		return
+	}
+
+	if id != userId && role != entity.RoleAdmin {
+		response.NewErrorResponse(c, http.StatusUnauthorized, "you cant delete this user")
 		return
 	}
 
@@ -78,9 +122,20 @@ func (h *Handler) DeleteUserById(c *gin.Context) {
 }
 
 func (h *Handler) UpdateUserById(c *gin.Context) {
+	userId, role, err := getUserCtx(c)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusBadRequest, "invalid id param")
+		return
+	}
+
+	if id != userId && role != entity.RoleAdmin {
+		response.NewErrorResponse(c, http.StatusUnauthorized, "you cant update this user")
 		return
 	}
 

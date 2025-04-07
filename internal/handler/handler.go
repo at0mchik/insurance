@@ -24,7 +24,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 	api := router.Group("/api")
 	{
-		user := api.Group("/user")
+		user := api.Group("/user", h.UserIdentity)
 		{
 			user.POST("/", h.CreateUser)
 			user.GET("/", h.GetAllUsers)
@@ -36,7 +36,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		{
 			auth.POST("/sign-in", h.SignIn) //authentication
 			auth.POST("/sign-up", h.SignUp) //registration
-			auth.GET("/parse", h.UserIdentity)
+			//auth.GET("/parse", h.UserIdentity) //uncomment c.JSON in UserIdentity
 		}
 	}
 
