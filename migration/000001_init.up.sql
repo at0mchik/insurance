@@ -56,3 +56,9 @@ CREATE TABLE assessment_results
     value       int,
     result_date DATE
 );
+
+INSERT INTO users (name, username, password_hash, role, gender, phone, email, passport_number, age, info)
+values('admin', 'admin', '667364666a73646e61666e31333132333132345f2b5fd033e22ae348aeb5660fc2140aec35850c4da997',
+       'admin', 'male', '1', 'admin', '1', 20, 'admin');
+
+--667364666a73646e61666e31333132333132345f2b5fd033e22ae348aeb5660fc2140aec35850c4da997
