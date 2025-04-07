@@ -22,6 +22,18 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		temp.GET("/", h.Temp)
 	}
 
+	api := router.Group("/api")
+	{
+		user := api.Group("/user")
+		{
+			user.POST("/")
+			user.GET("/")
+			user.GET("/:id")
+			user.DELETE("/:id")
+			user.PUT("/:id")
+		}
+	}
+
 	return router
 }
 

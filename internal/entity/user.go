@@ -13,3 +13,14 @@ type User struct {
 	Age            int    `json:"age" binding:"required" db:"age"`
 	Info           string `json:"info" binding:"required" db:"info"`
 }
+
+type UpdateUserInput struct {
+	Name           string `json:"name"`
+	Password       string `json:"password"`
+	Gender         string `json:"gender"`
+	Phone          string `json:"phone"`
+	Email          string `json:"email"`
+	PassportNumber string `json:"passport_number"`
+	Age            int    `json:"age"`
+	Info           string `json:"info"`
+}
