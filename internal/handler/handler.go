@@ -41,10 +41,12 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		policy := api.Group("/policy", h.UserIdentity)
 		{
 			policy.POST("/", h.CreatePolicy)
-			policy.GET("/user-token", h.GetAllPoliciesByUser)
-			//policy.GET("/:id")
-			//policy.DELETE("/:id")
-			//policy.PUT("/:id")
+			policy.GET("/by-id/:id", h.GetPolicyById)
+			policy.GET("/user-token", h.GetAllPoliciesByUserToken)
+			policy.GET("/user-id/:id", h.GetAllPoliciesByUserId)
+			policy.GET("/all", h.GetAllPolicies)
+			policy.DELETE("/:id", h.DeletePolicyById)
+			policy.PUT("/:id", h.UpdatePolicyById)
 		}
 	}
 

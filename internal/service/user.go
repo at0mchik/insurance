@@ -32,9 +32,11 @@ func (s *UserService) GetAllUsers() ([]entity.User, error) {
 func (s *UserService) GetUserById(id int) (entity.User, error) {
 	return s.repo.GetUserById(id)
 }
+
 func (s *UserService) DeleteUserById(id int) error {
 	return s.repo.DeleteUserById(id)
 }
+
 func (s *UserService) UpdateUserById(id int, input entity.UpdateUserInput) error {
 	if err := input.Validate(); err != nil {
 		return err

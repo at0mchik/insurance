@@ -2,6 +2,7 @@ package entity
 
 import (
 	"encoding/json"
+	"errors"
 	"time"
 )
 
@@ -36,6 +37,14 @@ type UpdatePolicyInput struct {
 	StartDate *time.Time `json:"start_date"`
 	EndDate   *time.Time `json:"end_date"`
 	Premium   *int       `json:"premium"`
+}
+
+func (i UpdatePolicyInput) Validate() error {
+	if i.StartDate == nil && i.EndDate == nil && i.Premium == nil {
+		errors.New("empty update input")
+	}
+	return nil
+
 }
 
 const (

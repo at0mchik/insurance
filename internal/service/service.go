@@ -20,11 +20,11 @@ type Authorization interface {
 
 type Policy interface {
 	CreatePolicy(userId int, policyReq entity.PolicyRequest) (int, error)
-	GetAllPolicyById(id int) ([]entity.PolicyResponse, error)
-	//GetAllPolicies() ([]entity.Policy, error)
-	//GetPolicyById(id int) (entity.Policy, error)
-	//DeletePolicyById(id int) error
-	//UpdatePolicyById(id int, input *entity.UpdatePolicyInput) error
+	GetAllPolicyByUserId(id int) ([]entity.PolicyResponse, error)
+	GetAllPolicies() ([]entity.PolicyResponse, error)
+	UpdatePolicyById(policyId int, input entity.UpdatePolicyInput) error
+	GetPolicyById(policyId int) (entity.PolicyResponse, error)
+	DeletePolicyById(policyId int) error
 }
 
 type Service struct {

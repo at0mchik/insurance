@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	"insurance/internal/entity"
+	"strings"
 )
 
 type PolicyPostgres struct {
@@ -45,7 +46,7 @@ func (r *PolicyPostgres) CreatePolicy(policy entity.Policy, details entity.Polic
 	return policyID, nil
 }
 
-func (r *PolicyPostgres) GetAllPolicyById(id int) ([]entity.Policy, []entity.PolicyDetails, error) {
+func (r *PolicyPostgres) GetAllPolicyByUserId(id int) ([]entity.Policy, []entity.PolicyDetails, error) {
 	var policies []entity.Policy
 	query := `SELECT id, client_id, policy_type, start_date, end_date, premium FROM policies WHERE client_id = $1`
 
@@ -72,18 +73,83 @@ func (r *PolicyPostgres) GetAllPolicyById(id int) ([]entity.Policy, []entity.Pol
 	return policies, details, nil
 }
 
-////func (r *PolicyPostgres) GetAllPolicies() ([]entity.Policy, error) {
-////
-////}
-////
-////func (r *PolicyPostgres) GetPolicyById(id int) (entity.Policy, error) {
-////
-////}
-////
-////func (r *PolicyPostgres) DeletePolicyById(id int) error {
-////
-////}
-////
-////func (r *PolicyPostgres) UpdatePolicyById(id int, input *entity.UpdatePolicyInput) error {
-////
-////}
+func (r *PolicyPostgres) GetAllPolicies() ([]entity.Policy, []entity.PolicyDetails, error) {
+	var policies []entity.Policy
+	query := `SELECT id, client_id, policy_type, start_date, end_date, premium FROM policies`
+
+	err := r.db.Select(&policies, query)
+
+	if err != nil {
+		return []entity.Policy{}, []entity.PolicyDetails{}, fmt.Errorf("error while selecting all policies: %w", err)
+	}
+
+	var policiesDetils []entity.PolicyDetails
+	queryDetils := `SELECT policy_id, details FROM policy_details`
+
+	err = r.db.Select(&policiesDetils, queryDetils)
+
+	if err != nil {
+		return []entity.Policy{}, []entity.PolicyDetails{}, fmt.Errorf("error while selecting all policies details: %w", err)
+	}
+
+	return policies, policiesDetils, nil
+}
+
+func (r *PolicyPostgres) GetPolicyById(policyId int) (entity.Policy, entity.PolicyDetails, error) {
+	var policy entity.Policy
+	query := `SELECT id, client_id, policy_type, start_date, end_date, premium FROM policies WHERE id = $1`
+
+	err := r.db.Get(&policy, query, policyId)
+	if err != nil {
+		return entity.Policy{}, entity.PolicyDetails{}, err
+	}
+
+	var details entity.PolicyDetails
+	queryDetils := `SELECT policy_id, details FROM policy_details WHERE policy_id = $1`
+
+	err = r.db.Get(&details, queryDetils, policyId)
+	if err != nil {
+		return entity.Policy{}, entity.PolicyDetails{}, err
+	}
+
+	return policy, details, nil
+}
+
+func (r *PolicyPostgres) UpdatePolicyById(policyId int, input entity.UpdatePolicyInput) error {
+	setValues := make([]string, 0)
+	args := make([]interface{}, 0)
+	argId := 1
+
+	if input.StartDate != nil {
+		setValues = append(setValues, fmt.Sprintf("start_date=$%d", argId))
+		args = append(args, *input.StartDate)
+		argId++
+	}
+	if input.EndDate != nil {
+		setValues = append(setValues, fmt.Sprintf("end_date=$%d", argId))
+		args = append(args, *input.EndDate)
+		argId++
+	}
+	if input.Premium != nil {
+		setValues = append(setValues, fmt.Sprintf("premium=$%d", argId))
+		args = append(args, *input.Premium)
+		argId++
+	}
+
+	setQuery := strings.Join(setValues, ", ")
+
+	query := fmt.Sprintf("UPDATE %s SET %s WHERE id=$%d", policiesTable, setQuery, argId)
+	args = append(args, policyId)
+
+	_, err := r.db.Exec(query, args...)
+
+	return err
+}
+
+func (r *PolicyPostgres) DeletePolicyById(policyId int) error {
+	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", policiesTable)
+
+	_, err := r.db.Exec(query, policyId)
+
+	return err
+}

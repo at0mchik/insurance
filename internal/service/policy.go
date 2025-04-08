@@ -88,8 +88,8 @@ func (s *PolicyService) CreatePolicy(userId int, policyReq entity.PolicyRequest)
 	return policyID, nil
 }
 
-func (s *PolicyService) GetAllPolicyById(id int) ([]entity.PolicyResponse, error) {
-	policies, details, err := s.repo.GetAllPolicyById(id)
+func (s *PolicyService) GetAllPolicyByUserId(id int) ([]entity.PolicyResponse, error) {
+	policies, details, err := s.repo.GetAllPolicyByUserId(id)
 	if err != nil {
 		return []entity.PolicyResponse{}, err
 	}
@@ -111,18 +111,54 @@ func (s *PolicyService) GetAllPolicyById(id int) ([]entity.PolicyResponse, error
 	return policiesResponse, nil
 }
 
-//func (s *PolicyService) GetAllPolicies() ([]entity.Policy, error) {
-//
-//}
-//
-//func (s *PolicyService) GetPolicyById(id int) (entity.Policy, error) {
-//
-//}
-//
-//func (s *PolicyService) DeletePolicyById(id int) error {
-//
-//}
-//
-//func (s *PolicyService) UpdatePolicyById(id int, input *entity.UpdatePolicyInput) error {
-//
-//}
+func (s *PolicyService) GetAllPolicies() ([]entity.PolicyResponse, error) {
+	policies, details, err := s.repo.GetAllPolicies()
+	if err != nil {
+		return []entity.PolicyResponse{}, err
+	}
+
+	var policiesResponse []entity.PolicyResponse
+	for i, policy := range policies {
+		policiesResponse = append(policiesResponse,
+			entity.PolicyResponse{
+				ID:        policy.Id,
+				ClientID:  policy.ClientId,
+				Type:      policy.PolicyType,
+				StartDate: policy.StartDate.Format("2006-01-02"),
+				EndDate:   policy.EndDate.Format("2006-01-02"),
+				Premium:   policy.Premium,
+				Details:   details[i].Details,
+			})
+	}
+
+	return policiesResponse, nil
+}
+
+func (s *PolicyService) GetPolicyById(policyId int) (entity.PolicyResponse, error) {
+	policy, details, err := s.repo.GetPolicyById(policyId)
+	if err != nil {
+		return entity.PolicyResponse{}, err
+	}
+
+	return entity.PolicyResponse{
+		ID:        policy.Id,
+		ClientID:  policy.ClientId,
+		Type:      policy.PolicyType,
+		StartDate: policy.StartDate.Format("2006-01-02"),
+		EndDate:   policy.EndDate.Format("2006-01-02"),
+		Premium:   policy.Premium,
+		Details:   details.Details,
+	}, nil
+}
+
+func (s *PolicyService) UpdatePolicyById(policyId int, input entity.UpdatePolicyInput) error {
+	if err := input.Validate(); err != nil {
+		return err
+	}
+
+	return s.repo.UpdatePolicyById(policyId, input)
+}
+
+func (s *PolicyService) DeletePolicyById(policyId int) error {
+	return s.repo.DeletePolicyById(policyId)
+}

@@ -25,11 +25,11 @@ type Authorization interface {
 
 type Policy interface {
 	CreatePolicy(policy entity.Policy, details entity.PolicyDetails) (int, error)
-	GetAllPolicyById(id int) ([]entity.Policy, []entity.PolicyDetails, error)
-	//GetAllPolicies() ([]entity.Policy, error)
-	//GetPolicyById(id int) (entity.Policy, error)
-	//DeletePolicyById(id int) error
-	//UpdatePolicyById(id int, input *entity.UpdatePolicyInput) error
+	GetAllPolicyByUserId(id int) ([]entity.Policy, []entity.PolicyDetails, error)
+	GetAllPolicies() ([]entity.Policy, []entity.PolicyDetails, error)
+	GetPolicyById(policyId int) (entity.Policy, entity.PolicyDetails, error)
+	UpdatePolicyById(policyId int, input entity.UpdatePolicyInput) error
+	DeletePolicyById(policyId int) error
 }
 
 type Repository struct {
