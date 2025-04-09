@@ -1,2 +1,5 @@
 .idea
 .env
+Dockerfile-client
+Dockerfile-server
+docker-compose.yml

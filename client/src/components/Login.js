@@ -1,11 +1,19 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { decodeToken, saveToken } from '../utils/auth';
 
 export default function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+    const location = useLocation();  // Извлекаем сообщение из состояния маршрута
+    const [message, setMessage] = useState('');
+
+    useEffect(() => {
+        if (location.state && location.state.message) {
+            setMessage(location.state.message);
+        }
+    }, [location]);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -46,6 +54,7 @@ export default function Login() {
     return (
         <div className="container mt-5">
             <h2>Вход</h2>
+            {message && <div className="alert alert-info">{message}</div>}  {/* Показываем сообщение при наличии */}
             <form onSubmit={handleLogin}>
                 <div className="mb-3">
                     <label>Имя пользователя</label>
@@ -57,6 +66,9 @@ export default function Login() {
                 </div>
                 <button type="submit" className="btn btn-primary">Войти</button>
             </form>
+            <div className="mt-3">
+                <p>Нет аккаунта? <a href="/register" className="btn btn-link">Зарегистрироваться</a></p>
+            </div>
         </div>
     );
 }

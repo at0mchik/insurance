@@ -22,9 +22,8 @@ func (h *Handler) SignUp(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, map[string]interface{}{
-		"id": id,
-	})
+	id++
+	c.JSON(http.StatusOK, "user created")
 }
 
 type signInInput struct {

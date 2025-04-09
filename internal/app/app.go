@@ -2,8 +2,8 @@ package app
 
 import (
 	"fmt"
-	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
 	"insurance/internal/config"
 	"insurance/internal/handler"

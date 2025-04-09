@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  # Сервис для клиента (React)
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile-client
+    ports:
+      - "80:80"  # Открываем порт 80 для доступа к React приложению
+    depends_on:
+      - server  # React приложение зависит от сервера
+    networks:
+      - app-network
+
+  # Сервис для сервера (Go)
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile-server
+    ports:
+      - "8000:8000"  # Открываем порт 8000 для Go сервера
+    environment:
+      - DATABASE_URL=postgres://postgres:qwerty@db:5432/postgres?sslmode=disable
+    depends_on:
+      - db  # Go сервер зависит от базы данных
+    networks:
+      - app-network
+
+  # Сервис для базы данных PostgreSQL
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: qwerty
+      POSTGRES_DB: postgres
+    ports:
+      - "5436:5432"  # Порт базы данных (5436 на хосте, 5432 в контейнере)
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+# Сетевые настройки
+networks:
+  app-network:
+    driver: bridge
+
+# Для сохранения данных базы данных
+volumes:
+  pgdata:
