@@ -5,6 +5,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"insurance/internal/entity"
 	"strings"
+	"time"
 )
 
 type PolicyPostgres struct {
@@ -120,13 +121,21 @@ func (r *PolicyPostgres) UpdatePolicyById(policyId int, input entity.UpdatePolic
 	argId := 1
 
 	if input.StartDate != nil {
+		startDate, err := time.Parse("2006-01-02", *input.StartDate)
+		if err != nil {
+			fmt.Errorf("invalid start_date: %w", err)
+		}
 		setValues = append(setValues, fmt.Sprintf("start_date=$%d", argId))
-		args = append(args, *input.StartDate)
+		args = append(args, startDate)
 		argId++
 	}
 	if input.EndDate != nil {
+		endDate, err := time.Parse("2006-01-02", *input.EndDate)
+		if err != nil {
+			fmt.Errorf("invalid start_date: %w", err)
+		}
 		setValues = append(setValues, fmt.Sprintf("end_date=$%d", argId))
-		args = append(args, *input.EndDate)
+		args = append(args, endDate)
 		argId++
 	}
 	if input.Premium != nil {

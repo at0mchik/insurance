@@ -45,7 +45,14 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 		assessment := api.Group("/assessment")
 		{
-			assessment.POST("/", h.CreateAssessmentRequest)
+			assessment.POST("/", h.CreateAssessmentRequestByToken)
+			assessment.GET("/by-id/:id", h.GetAssessmentById)
+			assessment.GET("/all", h.GetAllAssessments)
+			assessment.GET("user-token", h.GetAllAssessmentsByUserToken)
+			assessment.GET("user-id/:id", h.GetAllAssessmentsByUserId)
+			assessment.PUT("/add-assessor", h.AssignAssessorToAssessment)
+			assessment.PUT("/change-result/:id", h.ChangeResultAssessment)
+			assessment.DELETE("/:id", h.DeleteAssessmentById)
 		}
 	}
 	auth := router.Group("/api/auth")

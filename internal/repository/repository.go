@@ -37,6 +37,12 @@ type Policy interface {
 
 type Assessment interface {
 	CreateAssessment(assessmentReq entity.AssessmentRequest, assessmentRes entity.AssessmentResultInput) (int, error)
+	GetAssessmentById(assessmentId int) (entity.AssessmentRequest, entity.AssessmentResultResponse, error)
+	GetAllAssessment() ([]entity.AssessmentRequest, []entity.AssessmentResultResponse, error)
+	GetAllAssessmentByUserId(userId int) ([]entity.AssessmentRequest, []entity.AssessmentResultResponse, error)
+	AddAssessorToAssessment(assessmentId, assessorId int) error
+	UpdateResultById(input entity.AssessmentResultUpdateInput, assessmentId int) error
+	DeleteAssessmentById(assessmentId int) error
 }
 
 type Repository struct {

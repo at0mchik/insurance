@@ -29,6 +29,12 @@ type Policy interface {
 
 type Assessment interface {
 	CreateAssessment(userId int, input entity.AssessmentRequestInput) (int, error)
+	GetAssessmentById(assessmentId int) (entity.AssessmentRequestResponse, error)
+	GetAllAssessment() ([]entity.AssessmentRequestResponse, error)
+	GetAllAssessmentByUserId(userId int) ([]entity.AssessmentRequestResponse, error)
+	AddAssessorToAssessment(input entity.AssessorAssignInput) error
+	UpdateResultById(input entity.AssessmentResultUpdateInput, assessmentId int) error
+	DeleteAssessmentById(assessmentId int) error
 }
 
 type Service struct {

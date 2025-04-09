@@ -39,7 +39,7 @@ CREATE TABLE assessment_requests
     id           serial not null unique,
     client_id    INT    NOT NULL REFERENCES users (id),
     policy_id    INT    NOT NULL REFERENCES policies (id),
-    assessor_id  INT    NOT NULL REFERENCES users (id),
+    assessor_id  INT    REFERENCES users (id),
     request_date DATE   NOT NULL,
     status       VARCHAR(20)
 );
@@ -49,7 +49,7 @@ CREATE TABLE assessment_results
 (
     id          serial not null unique,
     request_id  INT    NOT NULL REFERENCES assessment_requests (id) ON DELETE CASCADE,
-    assessor_id INT    NOT NULL REFERENCES users (id),
+    assessor_id INT    REFERENCES users (id),
     result_text TEXT,
     value       int,
     result_date DATE
