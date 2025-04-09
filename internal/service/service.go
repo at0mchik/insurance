@@ -27,10 +27,15 @@ type Policy interface {
 	DeletePolicyById(policyId int) error
 }
 
+type Assessment interface {
+	CreateAssessment(userId int, input entity.AssessmentRequestInput) (int, error)
+}
+
 type Service struct {
 	User
 	Authorization
 	Policy
+	Assessment
 }
 
 func NewService(repos *repository.Repository) *Service {
@@ -38,5 +43,6 @@ func NewService(repos *repository.Repository) *Service {
 		User:          NewUserService(repos),
 		Authorization: NewAuthService(repos),
 		Policy:        NewPolicyService(repos),
+		Assessment:    NewAssessmentService(repos),
 	}
 }

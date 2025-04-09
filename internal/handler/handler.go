@@ -22,9 +22,9 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		temp.GET("/", h.Temp)
 	}
 
-	api := router.Group("/api")
+	api := router.Group("/api", h.UserIdentity)
 	{
-		user := api.Group("/user", h.UserIdentity)
+		user := api.Group("/user")
 		{
 			user.POST("/", h.CreateUser)
 			user.GET("/", h.GetAllUsers)
@@ -32,13 +32,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			user.DELETE("/:id", h.DeleteUserById)
 			user.PUT("/:id", h.UpdateUserById)
 		}
-		auth := api.Group("/auth")
-		{
-			auth.POST("/sign-in", h.SignIn) //authentication
-			auth.POST("/sign-up", h.SignUp) //registration
-			//auth.GET("/parse", h.UserIdentity) //uncomment c.JSON in UserIdentity
-		}
-		policy := api.Group("/policy", h.UserIdentity)
+		policy := api.Group("/policy")
 		{
 			policy.POST("/", h.CreatePolicy)
 			policy.GET("/by-id/:id", h.GetPolicyById)
@@ -48,6 +42,17 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			policy.DELETE("/:id", h.DeletePolicyById)
 			policy.PUT("/:id", h.UpdatePolicyById)
 		}
+
+		assessment := api.Group("/assessment")
+		{
+			assessment.POST("/", h.CreateAssessmentRequest)
+		}
+	}
+	auth := router.Group("/api/auth")
+	{
+		auth.POST("/sign-in", h.SignIn) //authentication
+		auth.POST("/sign-up", h.SignUp) //registration
+		//auth.GET("/parse", h.UserIdentity) //uncomment c.JSON in UserIdentity
 	}
 
 	return router

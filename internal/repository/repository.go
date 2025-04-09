@@ -6,8 +6,11 @@ import (
 )
 
 const (
-	usersTable    = "users"
-	policiesTable = "policies"
+	usersTable             = "users"
+	policiesTable          = "policies"
+	policyDetailsTable     = "policy_details"
+	assessmentRequestTable = "assessment_requests"
+	assessmentResultTable  = "assessment_results"
 )
 
 type User interface {
@@ -32,10 +35,15 @@ type Policy interface {
 	DeletePolicyById(policyId int) error
 }
 
+type Assessment interface {
+	CreateAssessment(assessmentReq entity.AssessmentRequest, assessmentRes entity.AssessmentResultInput) (int, error)
+}
+
 type Repository struct {
 	User
 	Authorization
 	Policy
+	Assessment
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
@@ -43,5 +51,6 @@ func NewRepository(db *sqlx.DB) *Repository {
 		User:          NewUserPostgres(db),
 		Authorization: NewAuthPostgres(db),
 		Policy:        NewPolicyPostgres(db),
+		Assessment:    NewAssessmentPostgres(db),
 	}
 }

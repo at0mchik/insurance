@@ -29,15 +29,14 @@ func (r *PolicyPostgres) CreatePolicy(policy entity.Policy, details entity.Polic
 	}()
 
 	var policyID int
-	query := `	INSERT INTO policies (client_id, policy_type, start_date, end_date, premium) VALUES ($1, $2, $3, $4, $5) RETURNING id`
+	query := fmt.Sprintf(`INSERT INTO %s (client_id, policy_type, start_date, end_date, premium) VALUES ($1, $2, $3, $4, $5) RETURNING id`, policiesTable)
 
 	err = tx.QueryRow(query, policy.ClientId, policy.PolicyType, policy.StartDate, policy.EndDate, policy.Premium).Scan(&policyID)
 	if err != nil {
 		return 0, fmt.Errorf("failed to insert policy: %w", err)
 	}
 
-	// Вставка деталей
-	detailQuery := `INSERT INTO policy_details (policy_id, details)	VALUES ($1, $2)	`
+	detailQuery := fmt.Sprintf(`INSERT INTO %s (policy_id, details)	VALUES ($1, $2)	`, policyDetailsTable)
 	_, err = tx.Exec(detailQuery, policyID, details.Details)
 	if err != nil {
 		return 0, fmt.Errorf("failed to insert policy details: %w", err)
@@ -48,7 +47,7 @@ func (r *PolicyPostgres) CreatePolicy(policy entity.Policy, details entity.Polic
 
 func (r *PolicyPostgres) GetAllPolicyByUserId(id int) ([]entity.Policy, []entity.PolicyDetails, error) {
 	var policies []entity.Policy
-	query := `SELECT id, client_id, policy_type, start_date, end_date, premium FROM policies WHERE client_id = $1`
+	query := fmt.Sprintf(`SELECT id, client_id, policy_type, start_date, end_date, premium FROM %s WHERE client_id = $1`, policiesTable)
 
 	err := r.db.Select(&policies, query, id)
 
@@ -60,7 +59,7 @@ func (r *PolicyPostgres) GetAllPolicyByUserId(id int) ([]entity.Policy, []entity
 
 	for _, policy := range policies {
 		var temp entity.PolicyDetails
-		detailQuery := `SELECT policy_id, details FROM policy_details WHERE policy_id = $1`
+		detailQuery := fmt.Sprintf(`SELECT policy_id, details FROM %s WHERE policy_id = $1`, policyDetailsTable)
 
 		err = r.db.Get(&temp, detailQuery, policy.Id)
 
@@ -75,7 +74,7 @@ func (r *PolicyPostgres) GetAllPolicyByUserId(id int) ([]entity.Policy, []entity
 
 func (r *PolicyPostgres) GetAllPolicies() ([]entity.Policy, []entity.PolicyDetails, error) {
 	var policies []entity.Policy
-	query := `SELECT id, client_id, policy_type, start_date, end_date, premium FROM policies`
+	query := fmt.Sprintf(`SELECT id, client_id, policy_type, start_date, end_date, premium FROM %s`, policiesTable)
 
 	err := r.db.Select(&policies, query)
 
@@ -84,9 +83,9 @@ func (r *PolicyPostgres) GetAllPolicies() ([]entity.Policy, []entity.PolicyDetai
 	}
 
 	var policiesDetils []entity.PolicyDetails
-	queryDetils := `SELECT policy_id, details FROM policy_details`
+	queryDetails := fmt.Sprintf(`SELECT policy_id, details FROM %s`, policyDetailsTable)
 
-	err = r.db.Select(&policiesDetils, queryDetils)
+	err = r.db.Select(&policiesDetils, queryDetails)
 
 	if err != nil {
 		return []entity.Policy{}, []entity.PolicyDetails{}, fmt.Errorf("error while selecting all policies details: %w", err)
@@ -97,7 +96,7 @@ func (r *PolicyPostgres) GetAllPolicies() ([]entity.Policy, []entity.PolicyDetai
 
 func (r *PolicyPostgres) GetPolicyById(policyId int) (entity.Policy, entity.PolicyDetails, error) {
 	var policy entity.Policy
-	query := `SELECT id, client_id, policy_type, start_date, end_date, premium FROM policies WHERE id = $1`
+	query := fmt.Sprintf(`SELECT id, client_id, policy_type, start_date, end_date, premium FROM %s WHERE id = $1`, policiesTable)
 
 	err := r.db.Get(&policy, query, policyId)
 	if err != nil {
@@ -105,9 +104,9 @@ func (r *PolicyPostgres) GetPolicyById(policyId int) (entity.Policy, entity.Poli
 	}
 
 	var details entity.PolicyDetails
-	queryDetils := `SELECT policy_id, details FROM policy_details WHERE policy_id = $1`
+	queryDetails := fmt.Sprintf(`SELECT policy_id, details FROM %s WHERE policy_id = $1`, policyDetailsTable)
 
-	err = r.db.Get(&details, queryDetils, policyId)
+	err = r.db.Get(&details, queryDetails, policyId)
 	if err != nil {
 		return entity.Policy{}, entity.PolicyDetails{}, err
 	}
