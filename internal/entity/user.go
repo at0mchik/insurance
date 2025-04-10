@@ -43,5 +43,5 @@ const (
 )
 
 func init() {
-	UserRoles = map[string]bool{RoleClient: true, RoleAdmin: true, RoleManager: true, RoleAssessor: true}
+	UserRoles = map[string]bool{RoleClient: true, RoleAdmin: true, RoleAssessor: true}
 }

@@ -1,7 +1,5 @@
 import { jwtDecode } from "jwt-decode";
 
-// const SECRET_KEY = 'vsmlsdmfls123412-+';
-
 export const decodeToken = (token) => {
     try {
         const decoded = jwtDecode(token);// можно проверить подпись, если JWT подписан HMAC
@@ -12,10 +10,22 @@ export const decodeToken = (token) => {
     }
 };
 
-export const saveToken = (token) => {
-    localStorage.setItem("jwt_token", token);
-};
+export function saveToken(token) {
+    localStorage.setItem('token', token);
+}
 
-export const getToken = () => {
-    return localStorage.getItem("jwt_token");
-};
+export function getUserRole() {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+
+    try {
+        const decoded = jwtDecode(token);
+        return decoded.user_role || null;
+    } catch (e) {
+        return null;
+    }
+}
+
+export function isAuthenticated() {
+    return !!localStorage.getItem('token');
+}

@@ -20,7 +20,7 @@ type CarDetails struct {
 type ApartmentDetails struct {
 	Address      string `json:"address"`
 	AreaSQM      int    `json:"area_sqm"`
-	Floor        int    `json:"floor"`
+	Level        int    `json:"level"`
 	Rooms        int    `json:"rooms"`
 	BuildingType string `json:"building_type"`
 	YearBuilt    int    `json:"year_built"`
@@ -31,7 +31,6 @@ type HealthDetails struct {
 	BirthDate             string   `json:"birth_date"`
 	BloodType             string   `json:"blood_type"`
 	PreExistingConditions []string `json:"pre_existing_conditions"`
-	Coverage              string   `json:"coverage"`
 	InsuredSum            int      `json:"insured_sum"`
 }
 
@@ -40,7 +39,6 @@ type WalletDetails struct {
 	WalletBrand       string           `json:"wallet_brand"`
 	CryptoAssets      []CryptoCurrency `json:"crypto_assets"`
 	EstimatedValueUSD float64          `json:"total_estimated_value_usd"`
-	SecurityLevel     string           `json:"security_level"`
 }
 
 type CryptoCurrency struct {

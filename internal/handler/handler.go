@@ -19,10 +19,11 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.New()
 
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"}, // Разрешить доступ только с этого origin
-		AllowMethods:     []string{"GET", "POST", "OPTIONS", "PUT", "DELETE"},
+		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
 		AllowHeaders:     []string{"Content-Type", "Authorization"},
-		AllowCredentials: true, // Если используешь куки, разрешаем их
+		AllowCredentials: true,
+		ExposeHeaders:    []string{"Authorization"},
 	}))
 
 	temp := router.Group("/temp")
@@ -35,6 +36,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		user := api.Group("/user")
 		{
 			user.POST("/", h.CreateUser)
+			user.GET("/by-token", h.GetUserByToken)
 			user.GET("/", h.GetAllUsers)
 			user.GET("/:id", h.GetUserById)
 			user.DELETE("/:id", h.DeleteUserById)
@@ -42,6 +44,9 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		}
 		policy := api.Group("/policy")
 		{
+			//policy.OPTIONS("/*any", func(c *gin.Context) {
+			//	c.Status(http.StatusNoContent)
+			//})
 			policy.POST("/", h.CreatePolicy)
 			policy.GET("/by-id/:id", h.GetPolicyById)
 			policy.GET("/user-token", h.GetAllPoliciesByUserToken)
@@ -63,6 +68,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			assessment.DELETE("/:id", h.DeleteAssessmentById)
 		}
 	}
+
 	auth := router.Group("/api/auth")
 	{
 		auth.POST("/sign-in", h.SignIn) //authentication

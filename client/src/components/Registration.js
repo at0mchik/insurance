@@ -159,7 +159,7 @@ export default function Registration() {
             <div className="mt-3">
                 <p>
                     Уже есть аккаунт?{' '}
-                    <a href="/" className="btn btn-link">
+                    <a href="/login" className="btn btn-link">
                         Войти
                     </a>
                 </p>

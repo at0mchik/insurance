@@ -68,6 +68,27 @@ func (h *Handler) GetAllUsers(c *gin.Context) {
 	})
 }
 
+func (h *Handler) GetUserByToken(c *gin.Context) {
+	userId, userRole, err := getUserCtx(c)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if !entity.UserRoles[userRole] {
+		response.NewErrorResponse(c, http.StatusUnauthorized, "role not client or assessor")
+		return
+	}
+
+	user, err := h.services.User.GetUserById(userId)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, user)
+}
+
 func (h *Handler) GetUserById(c *gin.Context) {
 	_, role, err := getUserCtx(c)
 	if err != nil {

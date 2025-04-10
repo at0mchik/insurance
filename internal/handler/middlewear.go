@@ -1,10 +1,12 @@
 package handler
 
 import (
+	"encoding/json"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"insurance/pkg/auth"
 	"insurance/pkg/response"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -14,6 +16,50 @@ const (
 	userCtxId           = "userId"
 	userCtxRole         = "userRole"
 )
+
+//func CORSMiddleware() gin.HandlerFunc {
+//	return func(c *gin.Context) {
+//		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+//		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+//		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+//		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
+//
+//		if c.Request.Method == "OPTIONS" {
+//			c.AbortWithStatus(204)
+//			return
+//		}
+//
+//		c.Next()
+//	}
+//}
+
+type ClassReturn struct {
+	Errcode int         `json:"errcode"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+}
+
+func corsHandler(h http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		log.Print("preflight detected: ", r.Header)
+		w.Header().Add("Connection", "keep-alive")
+		w.Header().Add("Access-Control-Allow-Origin", "http://localhost:3000")
+		w.Header().Add("Access-Control-Allow-Methods", "POST, OPTIONS, GET, DELETE, PUT")
+		w.Header().Add("Access-Control-Allow-Headers", "content-type")
+		w.Header().Add("Access-Control-Max-Age", "86400")
+
+		// continue with my method
+		handleOutput(w, r)
+	}
+}
+
+func handleOutput(w http.ResponseWriter, r *http.Request) {
+	json.NewEncoder(w).Encode(ClassReturn{
+		Errcode: 0,
+		Message: "stuff endpoint",
+		Data:    r.Method,
+	})
+}
 
 func (h *Handler) UserIdentity(c *gin.Context) {
 	header := c.GetHeader(authorizationHeader)

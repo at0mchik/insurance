@@ -63,7 +63,7 @@ func (s *PolicyService) CreatePolicy(userId int, policyReq entity.PolicyRequest)
 		}
 		validatedDetails = details
 
-	case "crypto_wallet":
+	case "crypto":
 		var details entity.WalletDetails
 		if err := json.Unmarshal(policyReq.Details, &details); err != nil {
 			return 0, fmt.Errorf("invalid wallet details: %w", err)

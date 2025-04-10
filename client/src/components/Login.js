@@ -31,13 +31,13 @@ export default function Login() {
 
                 switch (decoded.user_role) {
                     case 'admin':
-                        navigate('/admin');
+                        navigate('/admin/panel');
                         break;
                     case 'client':
-                        navigate('/client');
+                        navigate('/client/policies');
                         break;
                     case 'assessor':
-                        navigate('/assessor');
+                        navigate('/assessor/assigned');
                         break;
                     default:
                         alert("Неизвестная роль");

@@ -1,0 +1,71 @@
+{
+  "data": [
+    {
+      "type": "car",
+      "start_date": "2025-01-01",
+      "end_date": "2025-12-31",
+      "premium": 1500,
+      "details": {
+        "make": "Toyota",
+        "model": "Corolla",
+        "year": 2020,
+        "vin": "JH4KA9650LC013926",
+        "engine_power_hp": 130,
+        "mileage_km": 25000
+      }
+    },
+    {
+      "type": "apartment",
+      "start_date": "2025-03-01",
+      "end_date": "2025-12-01",
+      "premium": 2000,
+      "details": {
+        "address": "123 Main St, Cityville",
+        "area_sqm": 80,
+        "floor": 5,
+        "rooms": 3,
+        "building_type": "brick",
+        "year_built": 2010
+      }
+    },
+    {
+      "type": "health",
+      "start_date": "2025-04-01",
+      "end_date": "2026-04-01",
+      "premium": 1000,
+      "details": {
+        "full_name": "John Doe",
+        "birth_date": "1985-06-15",
+        "blood_type": "O+",
+        "pre_existing_conditions": [
+          "hypertension",
+          "asthma"
+        ],
+        "coverage": "full",
+        "insured_sum": 500000
+      }
+    },
+    {
+      "type": "crypto",
+      "start_date": "2025-04-05",
+      "end_date": "2026-04-05",
+      "premium": 800,
+      "details": {
+        "wallet_type": "hardware",
+        "wallet_brand": "Ledger",
+        "crypto_assets": [
+          {
+            "currency": "Bitcoin",
+            "amount": 2.5
+          },
+          {
+            "currency": "Ethereum",
+            "amount": 10
+          }
+        ],
+        "total_estimated_value_usd": 100000
+      }
+    }
+  ]
+}
+
