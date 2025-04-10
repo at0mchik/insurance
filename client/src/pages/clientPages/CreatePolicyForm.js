@@ -268,16 +268,6 @@ export default function CreatePolicyPage() {
                                 Добавить заболевание
                             </button>
                         </div>
-                        <div className="mb-3">
-                            <label className="form-label">Сумма страхования</label>
-                            <input
-                                type="number"
-                                className="form-control"
-                                name="insured_sum"
-                                value={formData.insured_sum || ''}
-                                onChange={handleChange}
-                            />
-                        </div>
                     </>
                 );
             case 'crypto':

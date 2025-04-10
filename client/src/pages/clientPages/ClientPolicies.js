@@ -8,6 +8,10 @@ export default function ClientPolicies() {
     const [policies, setPolicies] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [errMessage, setErrMessage] = useState(null)
+    const [editPolicyId, setEditPolicyId] = useState(null);
+    const [formData, setFormData] = useState({ premium: '', start_date: '', end_date: '' });
+
 
     useEffect(() => {
         const fetchPolicies = async () => {
@@ -35,7 +39,11 @@ export default function ClientPolicies() {
                 }
 
                 const data = await response.json();
-                setPolicies(data.data);
+                if (data.data === null){
+                    setErrMessage("data = null");
+                }else{
+                    setPolicies(data.data);
+                }
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -45,6 +53,71 @@ export default function ClientPolicies() {
 
         fetchPolicies();
     }, []);
+
+    const handleDeletePolicy = async (policyId) => {
+        const token = localStorage.getItem('token');
+        if (!token) return alert('Токен отсутствует');
+
+        const confirmDelete = window.confirm(`Удалить полис №${policyId}?`);
+        if (!confirmDelete) return;
+
+        try {
+            const response = await fetch(`http://localhost:8000/api/policy/${policyId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            if (!response.ok) throw new Error('Не удалось удалить полис');
+
+            // Обновляем список полисов
+            setPolicies(prev => prev.filter(p => p.id !== policyId));
+        } catch (error) {
+            alert('Ошибка при удалении: ' + error.message);
+        }
+    };
+
+    const handleEditClick = (policy) => {
+        setEditPolicyId(policy.id);
+        setFormData({
+            premium: policy.premium,
+            start_date: policy.start_date,
+            end_date: policy.end_date,
+        });
+    };
+
+    const handleEditSubmit = async (e, policyId) => {
+        e.preventDefault();
+        const token = localStorage.getItem('token');
+        if (!token) return alert('Токен отсутствует');
+
+        formData.premium = parseInt(formData.premium)
+        try {
+            const response = await fetch(`http://localhost:8000/api/policy/${policyId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (!response.ok) throw new Error('Ошибка при обновлении');
+
+            alert('Полис обновлён');
+            setEditPolicyId(null);
+        } catch (error) {
+            alert('Ошибка: ' + error.message);
+        }
+    };
+
+    const handleChange = (e) => {
+        setFormData(prev => ({
+            ...prev,
+            [e.target.name]: e.target.value,
+        }));
+    };
 
     if (loading) {
         return <div>Загрузка...</div>;
@@ -64,7 +137,7 @@ export default function ClientPolicies() {
                 </div>
                 <div className="container mt-4">
                     <div>
-                        {policies.length === 0 ? (
+                        {errMessage != null ? (
                             <p>У вас нет полисов.</p>
                         ) : (
                             <div className="justify-content-between align-items-center align-self-stretch">
@@ -81,7 +154,7 @@ export default function ClientPolicies() {
                                                     {/* Отображение данных в зависимости от типа полиса */}
                                                     {policy.type === 'car' && (
                                                         <div>
-                                                            <h6>Детали автомобиля:</h6>
+                                                            <h5>Детали:</h5>
                                                             <p><strong>Марка:</strong> {policy.details.make}</p>
                                                             <p><strong>Модель:</strong> {policy.details.model}</p>
                                                             <p><strong>Год:</strong> {policy.details.year}</p>
@@ -96,7 +169,7 @@ export default function ClientPolicies() {
 
                                                     {policy.type === 'apartment' && (
                                                         <div>
-                                                            <h6>Детали апартаментов:</h6>
+                                                            <h5>Детали:</h5>
                                                             <p><strong>Адрес:</strong> {policy.details.address}</p>
                                                             <p><strong>Площадь (м²):</strong> {policy.details.area_sqm}
                                                             </p>
@@ -110,7 +183,7 @@ export default function ClientPolicies() {
 
                                                     {policy.type === 'health' && (
                                                         <div>
-                                                            <h6>Детали здоровья:</h6>
+                                                            <h5>Детали:</h5>
                                                             <p><strong>ФИО:</strong> {policy.details.full_name}</p>
                                                             <p><strong>Дата
                                                                 рождения:</strong> {policy.details.birth_date}</p>
@@ -119,18 +192,16 @@ export default function ClientPolicies() {
                                                             <p><strong>Существующие
                                                                 заболевания:</strong> {policy.details.pre_existing_conditions.join(', ')}
                                                             </p>
-                                                            <p><strong>Сумма
-                                                                страхования:</strong> {policy.details.insured_sum} ₽</p>
                                                         </div>
                                                     )}
 
                                                     {policy.type === 'crypto' && (
                                                         <div>
-                                                            <h6>Детали криптовалюты:</h6>
+                                                            <h5>Детали:</h5>
                                                             {policy.details.crypto_assets.length > 0 ? (
                                                                 <ul>
                                                                     {policy.details.crypto_assets.map((asset, index) => (
-                                                                        <li key={index}>
+                                                                        <li key={`${asset.currency}-${asset.amount}`}>
                                                                             <p>
                                                                                 <strong>Сумма:</strong> {asset.amount} {asset.currency}
                                                                             </p>
@@ -147,7 +218,65 @@ export default function ClientPolicies() {
                                                     )}
                                                 </div>
                                             </div>
+
                                             <RequestAssessmentButton policyId={policy.id} />
+
+                                            {editPolicyId === policy.id ? (
+                                                <form onSubmit={(e) => handleEditSubmit(e, policy.id)} className="mt-3">
+                                                    <div className="mb-2">
+                                                        <label>Премия</label>
+                                                        <input
+                                                            type="number"
+                                                            name="premium"
+                                                            className="form-control"
+                                                            value={formData.premium}
+                                                            onChange={handleChange}
+                                                            required
+                                                        />
+                                                    </div>
+                                                    <div className="mb-2">
+                                                        <label>Дата начала</label>
+                                                        <input
+                                                            type="date"
+                                                            name="start_date"
+                                                            className="form-control"
+                                                            value={formData.start_date}
+                                                            onChange={handleChange}
+                                                            required
+                                                        />
+                                                    </div>
+                                                    <div className="mb-2">
+                                                        <label>Дата окончания</label>
+                                                        <input
+                                                            type="date"
+                                                            name="end_date"
+                                                            className="form-control"
+                                                            value={formData.end_date}
+                                                            onChange={handleChange}
+                                                            required
+                                                        />
+                                                    </div>
+                                                    <div className="d-flex justify-content-start gap-2">
+                                                        <button type="submit" className="btn btn-success">Сохранить</button>
+                                                        <button type="button" className="btn btn-secondary" onClick={() => setEditPolicyId(null)}>Отмена</button>
+                                                    </div>
+                                                </form>
+                                            ) : (
+                                                <div className="d-flex justify-content-start gap-2 mt-3">
+                                                    <button
+                                                        className="btn btn-outline-primary"
+                                                        onClick={() => handleEditClick(policy)}
+                                                    >
+                                                        Изменить
+                                                    </button>
+                                                    <button
+                                                        className="btn btn-outline-danger"
+                                                        onClick={() => handleDeletePolicy(policy.id)}
+                                                    >
+                                                        Удалить
+                                                    </button>
+                                                </div>
+                                                )}
                                         </div>
                                     </div>
                                 ))}

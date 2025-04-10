@@ -10,6 +10,7 @@ export default function AssessorAssignedAssessments() {
     const [resultValue, setResultValue] = useState('');
     const [showResultForm, setShowResultForm] = useState(false);
     const today = new Date().toISOString().split('T')[0];
+    const [policyDetails, setPolicyDetails] = useState(null);
 
     useEffect(() => {
         const fetchAssessments = async () => {
@@ -144,6 +145,114 @@ export default function AssessorAssignedAssessments() {
         }
     };
 
+    const handleGetPolicyDetails = async (policyId) => {
+        const token = localStorage.getItem('token');
+
+        if (!token) {
+            alert('Токен отсутствует!');
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8000/api/policy/by-id/${policyId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Error response:', errorText);
+                throw new Error('Ошибка при получении полиса');
+            }
+
+            const data = await response.json();
+            if (data && data) {
+                setPolicyDetails(data); // Устанавливаем данные полиса
+            } else {
+                setError('Полис не найден');
+            }
+
+        } catch (err) {
+            setError(`Ошибка при загрузке полиса: ${err.message}`);
+        }
+    };
+
+    // Функция для рендеринга данных полиса в зависимости от типа
+    const renderPolicyDetails = (policy) => {
+        if (!policy) return null;
+
+        return (
+            <div className="card ml-2">
+                <div className="card-body">
+                    <p><strong>Тип полиса:</strong> {policy.type}</p>
+                    <p><strong>Начало:</strong> {policy.start_date}</p>
+                    <p><strong>Конец:</strong> {policy.end_date}</p>
+                    <p><strong>Премия:</strong> {policy.premium} ₽</p>
+
+                    {/* Отображение данных в зависимости от типа полиса */}
+                    {policy.type === 'car' && (
+                        <div>
+                            <h6>Детали автомобиля:</h6>
+                            <p><strong>Марка:</strong> {policy.details.make}</p>
+                            <p><strong>Модель:</strong> {policy.details.model}</p>
+                            <p><strong>Год:</strong> {policy.details.year}</p>
+                            <p><strong>VIN:</strong> {policy.details.vin}</p>
+                            <p><strong>Мощность двигателя (л.с.):</strong> {policy.details.engine_power_hp}</p>
+                            <p><strong>Пробег (км):</strong> {policy.details.mileage_km}</p>
+                        </div>
+                    )}
+
+                    {policy.type === 'apartment' && (
+                        <div>
+                            <h6>Детали апартаментов:</h6>
+                            <p><strong>Адрес:</strong> {policy.details.address}</p>
+                            <p><strong>Площадь (м²):</strong> {policy.details.area_sqm}</p>
+                            <p><strong>Этаж:</strong> {policy.details.floor}</p>
+                            <p><strong>Тип здания:</strong> {policy.details.building_type}</p>
+                            <p><strong>Год постройки:</strong> {policy.details.year_built}</p>
+                        </div>
+                    )}
+
+                    {policy.type === 'health' && (
+                        <div>
+                            <h6>Детали здоровья:</h6>
+                            <p><strong>ФИО:</strong> {policy.details.full_name}</p>
+                            <p><strong>Дата рождения:</strong> {policy.details.birth_date}</p>
+                            <p><strong>Группа крови:</strong> {policy.details.blood_type}</p>
+                            <p><strong>Существующие
+                                заболевания:</strong> {policy.details.pre_existing_conditions.join(', ')}</p>
+                            <p><strong>Сумма страхования:</strong> {policy.details.insured_sum} ₽</p>
+                        </div>
+                    )}
+
+                    {policy.type === 'crypto' && (
+                        <div>
+                            <h6>Детали криптовалюты:</h6>
+                            {policy.details.crypto_assets.length > 0 ? (
+                                <ul>
+                                    {policy.details.crypto_assets.map((asset, index) => (
+                                        <li key={index}>
+                                            <p>
+                                                <strong>Сумма:</strong> {asset.amount} {asset.currency}
+                                            </p>
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p>Нет криптовалютных активов.</p>
+                            )}
+                            <p><strong>Общая оценочная стоимость
+                                (USD):</strong> {policy.details.total_estimated_value_usd} USD</p>
+                        </div>
+                    )}
+                </div>
+            </div>
+        );
+    };
+
     return (
         <div>
             <Header role="assessor" />
@@ -177,6 +286,19 @@ export default function AssessorAssignedAssessments() {
                                             <p><strong>Комментарий:</strong> {req.result.result_text}</p>
                                             <p><strong>Дата оценки:</strong> {req.result.result_date}</p>
                                         </>
+                                    )}
+
+                                    <button
+                                        className="btn btn-info mt-3"
+                                        onClick={() => handleGetPolicyDetails(req.id)}
+                                    >
+                                        Получить полис #{req.id}
+                                    </button>
+
+
+                                    {/* Отображение данных полиса, если его ID совпадает с ID заявки */}
+                                    {policyDetails && policyDetails.id === req.id && (
+                                        renderPolicyDetails(policyDetails)
                                     )}
 
                                     {req.status === 'cancelled' && (

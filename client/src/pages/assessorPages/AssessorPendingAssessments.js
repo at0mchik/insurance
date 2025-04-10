@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Header from '../../components/Header';
 
 export default function AssessorPendingAssessments() {
@@ -70,7 +70,7 @@ export default function AssessorPendingAssessments() {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ assessment_id: assessmentId }),
+                body: JSON.stringify({assessment_id: assessmentId}),
             });
 
             if (!response.ok) {
@@ -96,7 +96,7 @@ export default function AssessorPendingAssessments() {
         }
 
         try {
-            const response = await fetch(`http://localhost:8000/api/policy/${policyId}`, {
+            const response = await fetch(`http://localhost:8000/api/policy/by-id/${policyId}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -111,8 +111,8 @@ export default function AssessorPendingAssessments() {
             }
 
             const data = await response.json();
-            if (data && data.policy) {
-                setPolicyDetails(data.policy); // Устанавливаем данные полиса
+            if (data && data) {
+                setPolicyDetails(data); // Устанавливаем данные полиса
                 setSelectedPolicyId(policyId); // Сохраняем ID выбранного полиса
             } else {
                 setError('Полис не найден');
@@ -122,6 +122,18 @@ export default function AssessorPendingAssessments() {
             setError(`Ошибка при загрузке полиса: ${err.message}`);
         }
     };
+
+    const renderError = (errorAssessment, error) =>{
+        if (error != null){
+            return(
+                <p>{error.value}</p>
+            )
+        } else{
+            return(
+                <p>{errorAssessment.value}</p>
+            )
+        }
+    }
 
     // Функция для рендеринга данных полиса в зависимости от типа
     const renderPolicyDetails = (policy) => {
@@ -165,7 +177,8 @@ export default function AssessorPendingAssessments() {
                             <p><strong>ФИО:</strong> {policy.details.full_name}</p>
                             <p><strong>Дата рождения:</strong> {policy.details.birth_date}</p>
                             <p><strong>Группа крови:</strong> {policy.details.blood_type}</p>
-                            <p><strong>Существующие заболевания:</strong> {policy.details.pre_existing_conditions.join(', ')}</p>
+                            <p><strong>Существующие
+                                заболевания:</strong> {policy.details.pre_existing_conditions.join(', ')}</p>
                             <p><strong>Сумма страхования:</strong> {policy.details.insured_sum} ₽</p>
                         </div>
                     )}
@@ -186,7 +199,8 @@ export default function AssessorPendingAssessments() {
                             ) : (
                                 <p>Нет криптовалютных активов.</p>
                             )}
-                            <p><strong>Общая оценочная стоимость (USD):</strong> {policy.details.total_estimated_value_usd} USD</p>
+                            <p><strong>Общая оценочная стоимость
+                                (USD):</strong> {policy.details.total_estimated_value_usd} USD</p>
                         </div>
                     )}
                 </div>
@@ -198,18 +212,17 @@ export default function AssessorPendingAssessments() {
         return <div>Загрузка...</div>;
     }
 
-    if (error) {
-        return <div className="alert alert-danger">{error}</div>; // Показываем ошибку на уровне страницы
-    }
-
     return (
         <div>
-            <Header role="assessor" />
+            <Header role="assessor"/>
             <div className="container mt-3">
                 <h2>Заявки требующие оценщика</h2>
-
-                {assessments.length === 0 ? (
-                    <p>Нет заявок, требующих оценщика.</p>
+                {loading ? (
+                    <p>Загрузка...</p>
+                ) : error ? (
+                    <p className="text-danger">Ошибка: {error}</p>
+                ) : assessments.length === 0 ? (
+                    <p>Нет заявок, назначенных вам.</p>
                 ) : (
                     <div>
                         {assessments.map((assessment) => (
@@ -224,17 +237,19 @@ export default function AssessorPendingAssessments() {
                                     <p><strong>Дата запроса:</strong> {assessment.request_date}</p>
 
                                     {/* Вывод кнопки для получения полиса */}
-                                    {assessment.policy && (
-                                        <button
-                                            className="btn btn-info mt-3"
-                                            onClick={() => handleGetPolicyDetails(assessment.policy.id)}
-                                        >
-                                            Получить полис #{assessment.policy.id}
-                                        </button>
-                                    )}
 
-                                    {/* Вывод полиса, если он есть */}
-                                    {selectedPolicyId === assessment.policy?.id && renderPolicyDetails(policyDetails)}
+                                    <button
+                                        className="btn btn-info mt-3"
+                                        onClick={() => handleGetPolicyDetails(assessment.id)}
+                                    >
+                                        Получить полис #{assessment.id}
+                                    </button>
+
+
+                                    {/* Отображение данных полиса, если его ID совпадает с ID заявки */}
+                                    {policyDetails && policyDetails.id === assessment.id && (
+                                        renderPolicyDetails(policyDetails)
+                                    )}
 
                                     {/* Кнопка для взятия заявки в работу */}
                                     {assessment.status === 'pending' && (

@@ -31,7 +31,6 @@ type HealthDetails struct {
 	BirthDate             string   `json:"birth_date"`
 	BloodType             string   `json:"blood_type"`
 	PreExistingConditions []string `json:"pre_existing_conditions"`
-	InsuredSum            int      `json:"insured_sum"`
 }
 
 type WalletDetails struct {
