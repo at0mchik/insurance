@@ -126,7 +126,7 @@ func (h *Handler) GetPolicyById(c *gin.Context) {
 		return
 	}
 
-	if userRole != entity.RoleClient && userRole != entity.RoleAdmin {
+	if userRole != entity.RoleClient && userRole != entity.RoleAdmin && userRole != entity.RoleAssessor {
 		response.NewErrorResponse(c, http.StatusUnauthorized, "role not client or admin")
 		return
 	}
@@ -142,7 +142,7 @@ func (h *Handler) GetPolicyById(c *gin.Context) {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-	if policyResponse.ClientID != userId && userRole != entity.RoleAdmin {
+	if policyResponse.ClientID != userId && userRole != entity.RoleAdmin && userRole != entity.RoleAssessor {
 		response.NewErrorResponse(c, http.StatusUnauthorized, "invalid client id")
 		return
 	}

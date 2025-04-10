@@ -253,3 +253,78 @@ func (h *Handler) DeleteAssessmentById(c *gin.Context) {
 
 	c.JSON(http.StatusOK, "assessment deleted")
 }
+
+func (h *Handler) GetAllAssessmentsByAssessorToken(c *gin.Context) {
+	userId, userRole, err := getUserCtx(c)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if userRole != entity.RoleAssessor {
+		response.NewErrorResponse(c, http.StatusUnauthorized, "role not assessor")
+		return
+	}
+
+	assessmentResponse, err := h.services.Assessment.GetAllAssessmentByAssessorId(userId)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, getAllAssessmentResponse{
+		Data: assessmentResponse,
+	})
+}
+
+func (h *Handler) GetAllAssessmentsByAssessorId(c *gin.Context) {
+	_, userRole, err := getUserCtx(c)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if userRole != entity.RoleAdmin {
+		response.NewErrorResponse(c, http.StatusUnauthorized, "role not admin")
+		return
+	}
+
+	assessorId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusBadRequest, "invalid id param")
+		return
+	}
+
+	assessmentResponse, err := h.services.Assessment.GetAllAssessmentByAssessorId(assessorId)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, getAllAssessmentResponse{
+		Data: assessmentResponse,
+	})
+}
+
+func (h *Handler) GetAllPendingAssessments(c *gin.Context) {
+	_, userRole, err := getUserCtx(c)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if userRole != entity.RoleAdmin && userRole != entity.RoleAssessor {
+		response.NewErrorResponse(c, http.StatusUnauthorized, "role not admin or assessor")
+		return
+	}
+
+	assessmentResponse, err := h.services.Assessment.GetAllPendingAssessments()
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, getAllAssessmentResponse{
+		Data: assessmentResponse,
+	})
+}

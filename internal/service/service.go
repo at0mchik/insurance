@@ -35,6 +35,8 @@ type Assessment interface {
 	AddAssessorToAssessment(input entity.AssessorAssignInput) error
 	UpdateResultById(input entity.AssessmentResultUpdateInput, assessmentId int) error
 	DeleteAssessmentById(assessmentId int) error
+	GetAllAssessmentByAssessorId(userId int) ([]entity.AssessmentRequestResponse, error)
+	GetAllPendingAssessments() ([]entity.AssessmentRequestResponse, error)
 }
 
 type Service struct {

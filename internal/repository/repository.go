@@ -43,6 +43,8 @@ type Assessment interface {
 	AddAssessorToAssessment(assessmentId, assessorId int) error
 	UpdateResultById(input entity.AssessmentResultUpdateInput, assessmentId int) error
 	DeleteAssessmentById(assessmentId int) error
+	GetAllAssessmentByAssessorId(userId int) ([]entity.AssessmentRequest, []entity.AssessmentResultResponse, error)
+	GetAllPendingAssessments() ([]entity.AssessmentRequest, []entity.AssessmentResultResponse, error)
 }
 
 type Repository struct {

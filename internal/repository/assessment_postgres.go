@@ -48,7 +48,7 @@ func (r *AssessmentPostgres) CreateAssessment(request entity.AssessmentRequest, 
 
 func (r *AssessmentPostgres) GetAssessmentById(assessmentId int) (entity.AssessmentRequest, entity.AssessmentResultResponse, error) {
 	var request entity.AssessmentRequest
-	var result entity.AssessmentResultResponse
+	var tempResult entity.AssessmentResultRequest
 
 	var tempString string
 	queryTemp := fmt.Sprintf(`SELECT result_text FROM %s WHERE request_id = $1`, assessmentResultTable)
@@ -63,32 +63,46 @@ func (r *AssessmentPostgres) GetAssessmentById(assessmentId int) (entity.Assessm
 		query = fmt.Sprintf(`SELECT id, client_id, policy_id, request_date, status FROM %s WHERE id = $1`, assessmentRequestTable)
 	} else if tempString == entity.AssessorAssignedNoResult {
 		query = fmt.Sprintf(`SELECT id, client_id, policy_id, assessor_id, request_date, status FROM %s WHERE id = $1`, assessmentRequestTable)
-	} else {
+	} else if tempString != entity.StatusCancelled {
 		query = fmt.Sprintf(`SELECT id, client_id, policy_id, assessor_id, request_date, status FROM %s WHERE id = $1`, assessmentRequestTable)
 		queryDetails := fmt.Sprintf(`SELECT result_text, value, result_date FROM %s WHERE request_id = $1`, assessmentResultTable)
 
-		err = r.db.Get(&result, queryDetails, assessmentId)
+		err = r.db.Get(&tempResult, queryDetails, assessmentId)
 		if err != nil {
 			return entity.AssessmentRequest{}, entity.AssessmentResultResponse{}, err
-		}
-	}
-
-	if request.Status == entity.StatusCancelled {
-		queryDetails := fmt.Sprintf(`SELECT result_text, result_date FROM %s WHERE request_id = $1`, assessmentResultTable)
-
-		err = r.db.Get(&result, queryDetails, assessmentId)
-		if err != nil {
-			return entity.AssessmentRequest{}, entity.AssessmentResultResponse{}, err
-		}
-	} else {
-		result = entity.AssessmentResultResponse{
-			ResultText: tempString,
 		}
 	}
 
 	err = r.db.Get(&request, query, assessmentId)
 	if err != nil {
 		return entity.AssessmentRequest{}, entity.AssessmentResultResponse{}, err
+	}
+
+	switch request.Status {
+	case entity.StatusCancelled:
+		queryDetails := fmt.Sprintf(`SELECT result_text, result_date FROM %s WHERE request_id = $1`, assessmentResultTable)
+
+		err = r.db.Get(&tempResult, queryDetails, assessmentId)
+		if err != nil {
+			return entity.AssessmentRequest{}, entity.AssessmentResultResponse{}, err
+		}
+	case entity.StatusReady:
+		queryDetails := fmt.Sprintf(`SELECT result_text, value, result_date FROM %s WHERE request_id = $1`, assessmentResultTable)
+
+		err = r.db.Get(&tempResult, queryDetails, assessmentId)
+		if err != nil {
+			return entity.AssessmentRequest{}, entity.AssessmentResultResponse{}, err
+		}
+	case entity.StatusPending:
+		tempResult = entity.AssessmentResultRequest{
+			ResultText: tempString,
+		}
+	}
+
+	result := entity.AssessmentResultResponse{
+		ResultDate: tempResult.ResultDate.Format("2006-01-02"),
+		ResultText: tempResult.ResultText,
+		Value:      tempResult.Value,
 	}
 
 	return request, result, nil
@@ -139,6 +153,8 @@ func (r *AssessmentPostgres) GetAllAssessmentByUserId(userId int) ([]entity.Asse
 		results = append(results, result)
 	}
 
+	fmt.Println(requests, results)
+
 	return requests, results, nil
 }
 
@@ -181,6 +197,8 @@ func (r *AssessmentPostgres) UpdateResultById(input entity.AssessmentResultUpdat
 		return err
 	}
 
+	fmt.Println(resDate)
+
 	if *input.Status == entity.StatusCancelled {
 		queryResult := fmt.Sprintf(`UPDATE %s SET result_date=$1 WHERE request_id=$2`, assessmentResultTable)
 		_, err = r.db.Exec(queryResult, resDate, assessmentId)
@@ -198,4 +216,58 @@ func (r *AssessmentPostgres) DeleteAssessmentById(assessmentId int) error {
 	_, err := r.db.Exec(query, assessmentId)
 
 	return err
+}
+func (r *AssessmentPostgres) GetAllAssessmentByAssessorId(userId int) ([]entity.AssessmentRequest, []entity.AssessmentResultResponse, error) {
+	var requests []entity.AssessmentRequest
+	var results []entity.AssessmentResultResponse
+	var assessmentsId []int
+
+	queryId := fmt.Sprintf(`SELECT id FROM %s WHERE assessor_id = $1`, assessmentRequestTable)
+	err := r.db.Select(&assessmentsId, queryId, userId)
+
+	if err != nil {
+		return []entity.AssessmentRequest{}, []entity.AssessmentResultResponse{}, fmt.Errorf("error while selecting all id: %w", err)
+	}
+
+	for _, id := range assessmentsId {
+		request, result, err := r.GetAssessmentById(id)
+		if err != nil {
+			return []entity.AssessmentRequest{}, []entity.AssessmentResultResponse{}, fmt.Errorf("error while selecting assessment with id %d: %w", err, id)
+		}
+		requests = append(requests, request)
+		results = append(results, result)
+	}
+
+	fmt.Println(requests, results)
+
+	return requests, results, nil
+}
+
+func (r *AssessmentPostgres) GetAllPendingAssessments() ([]entity.AssessmentRequest, []entity.AssessmentResultResponse, error) {
+	var requests []entity.AssessmentRequest
+	var results []entity.AssessmentResultResponse
+	var requestId []int
+
+	queryId := fmt.Sprintf(`SELECT request_id  FROM %s WHERE result_text = $1`, assessmentResultTable)
+	err := r.db.Select(&requestId, queryId, entity.EmptyResult)
+
+	if err != nil {
+		return []entity.AssessmentRequest{}, []entity.AssessmentResultResponse{}, fmt.Errorf("error while selecting all id: %w", err)
+	}
+
+	for _, id := range requestId {
+		request, result, err := r.GetAssessmentById(id)
+		if err != nil {
+			return []entity.AssessmentRequest{}, []entity.AssessmentResultResponse{}, fmt.Errorf("error while selecting assessment with id %d: %w", err, id)
+		}
+
+		if request.Status == entity.StatusPending {
+			requests = append(requests, request)
+			results = append(results, result)
+		}
+	}
+
+	fmt.Println(requests, results)
+
+	return requests, results, nil
 }

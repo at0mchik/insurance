@@ -44,6 +44,12 @@ type AssessmentResultResponse struct {
 	ResultDate string `json:"result_date" db:"result_date"`
 }
 
+type AssessmentResultRequest struct {
+	ResultText string    `json:"result_text" db:"result_text"`
+	Value      int       `json:"value" db:"value"`
+	ResultDate time.Time `json:"result_date" db:"result_date"`
+}
+
 const (
 	EmptyResult              = "empty"
 	AssessorAssignedNoResult = "assigned"

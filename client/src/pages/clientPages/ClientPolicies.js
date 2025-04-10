@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {Link} from 'react-router-dom';
 import Header from "../../components/Header";
+import RequestAssessmentButton from "../../components/RequestAssessmentButton";
+
 
 export default function ClientPolicies() {
     const [policies, setPolicies] = useState([]);
@@ -54,80 +56,103 @@ export default function ClientPolicies() {
 
     return (
         <div>
-            <Header role="client" />
+            <Header role="client"/>
             <div className="container mt-5">
-                <h2>Ваши полисы</h2>
-                <div className="card mt-4">
-                    <div className="card-body">
-                        <h5 className="card-title">Полисы</h5>
+                <div className="d-flex justify-content-between align-items-center mb-4">
+                    <h2 className="mb-0">Ваши полисы</h2>
+                    <Link to="/client/create" className="btn btn-primary">Создать новый полис</Link>
+                </div>
+                <div className="container mt-4">
+                    <div>
                         {policies.length === 0 ? (
                             <p>У вас нет полисов.</p>
                         ) : (
-                            <ul className="list-group">
+                            <div className="justify-content-between align-items-center align-self-stretch">
                                 {policies.map((policy) => (
-                                    <li key={policy.id} className="list-group-item">
-                                        <h5>Тип полиса: {policy.type}</h5>
-                                        <p><strong>Начало:</strong> {policy.start_date}</p>
-                                        <p><strong>Конец:</strong> {policy.end_date}</p>
-                                        <p><strong>Премия:</strong> {policy.premium} ₽</p>
+                                    <div className="card d-flex flex-column mt-3">
+                                        <h4 className="card-title pt-3 ps-3">Полис №{policy.id}</h4>
+                                        <div className="card-body">
+                                            <p><strong>Тип полиса: {policy.type}</strong></p>
+                                            <p><strong>Начало:</strong> {policy.start_date}</p>
+                                            <p><strong>Конец:</strong> {policy.end_date}</p>
+                                            <p><strong>Премия:</strong> {policy.premium} ₽</p>
+                                            <div className="card ml-2">
+                                                <div className="card-body">
+                                                    {/* Отображение данных в зависимости от типа полиса */}
+                                                    {policy.type === 'car' && (
+                                                        <div>
+                                                            <h6>Детали автомобиля:</h6>
+                                                            <p><strong>Марка:</strong> {policy.details.make}</p>
+                                                            <p><strong>Модель:</strong> {policy.details.model}</p>
+                                                            <p><strong>Год:</strong> {policy.details.year}</p>
+                                                            <p><strong>VIN:</strong> {policy.details.vin}</p>
+                                                            <p><strong>Мощность двигателя
+                                                                (л.с.):</strong> {policy.details.engine_power_hp}
+                                                            </p>
+                                                            <p><strong>Пробег
+                                                                (км):</strong> {policy.details.mileage_km}</p>
+                                                        </div>
+                                                    )}
 
-                                        {/* Отображение данных в зависимости от типа полиса */}
-                                        {policy.type === 'car' && (
-                                            <div>
-                                                <h6>Детали автомобиля:</h6>
-                                                <p><strong>Марка:</strong> {policy.details.make}</p>
-                                                <p><strong>Модель:</strong> {policy.details.model}</p>
-                                                <p><strong>Год:</strong> {policy.details.year}</p>
-                                                <p><strong>VIN:</strong> {policy.details.vin}</p>
-                                                <p><strong>Мощность двигателя (л.с.):</strong> {policy.details.engine_power_hp}</p>
-                                                <p><strong>Пробег (км):</strong> {policy.details.mileage_km}</p>
-                                            </div>
-                                        )}
+                                                    {policy.type === 'apartment' && (
+                                                        <div>
+                                                            <h6>Детали апартаментов:</h6>
+                                                            <p><strong>Адрес:</strong> {policy.details.address}</p>
+                                                            <p><strong>Площадь (м²):</strong> {policy.details.area_sqm}
+                                                            </p>
+                                                            <p><strong>Этаж:</strong> {policy.details.floor}</p>
+                                                            <p><strong>Тип
+                                                                здания:</strong> {policy.details.building_type}</p>
+                                                            <p><strong>Год
+                                                                постройки:</strong> {policy.details.year_built}</p>
+                                                        </div>
+                                                    )}
 
-                                        {policy.type === 'apartment' && (
-                                            <div>
-                                                <h6>Детали апартаментов:</h6>
-                                                <p><strong>Адрес:</strong> {policy.details.address}</p>
-                                                <p><strong>Площадь (м²):</strong> {policy.details.area_sqm}</p>
-                                                <p><strong>Этаж:</strong> {policy.details.floor}</p>
-                                                <p><strong>Тип здания:</strong> {policy.details.building_type}</p>
-                                                <p><strong>Год постройки:</strong> {policy.details.year_built}</p>
-                                            </div>
-                                        )}
+                                                    {policy.type === 'health' && (
+                                                        <div>
+                                                            <h6>Детали здоровья:</h6>
+                                                            <p><strong>ФИО:</strong> {policy.details.full_name}</p>
+                                                            <p><strong>Дата
+                                                                рождения:</strong> {policy.details.birth_date}</p>
+                                                            <p><strong>Группа
+                                                                крови:</strong> {policy.details.blood_type}</p>
+                                                            <p><strong>Существующие
+                                                                заболевания:</strong> {policy.details.pre_existing_conditions.join(', ')}
+                                                            </p>
+                                                            <p><strong>Сумма
+                                                                страхования:</strong> {policy.details.insured_sum} ₽</p>
+                                                        </div>
+                                                    )}
 
-                                        {policy.type === 'health' && (
-                                            <div>
-                                                <h6>Детали здоровья:</h6>
-                                                <p><strong>ФИО:</strong> {policy.details.full_name}</p>
-                                                <p><strong>Дата рождения:</strong> {policy.details.birth_date}</p>
-                                                <p><strong>Группа крови:</strong> {policy.details.blood_type}</p>
-                                                <p><strong>Существующие заболевания:</strong> {policy.details.pre_existing_conditions.join(', ')}</p>
-                                                <p><strong>Сумма страхования:</strong> {policy.details.insured_sum} ₽</p>
+                                                    {policy.type === 'crypto' && (
+                                                        <div>
+                                                            <h6>Детали криптовалюты:</h6>
+                                                            {policy.details.crypto_assets.length > 0 ? (
+                                                                <ul>
+                                                                    {policy.details.crypto_assets.map((asset, index) => (
+                                                                        <li key={index}>
+                                                                            <p>
+                                                                                <strong>Сумма:</strong> {asset.amount} {asset.currency}
+                                                                            </p>
+                                                                        </li>
+                                                                    ))}
+                                                                </ul>
+                                                            ) : (
+                                                                <p>Нет криптовалютных активов.</p>
+                                                            )}
+                                                            <p><strong>Общая оценочная стоимость
+                                                                (USD):</strong> {policy.details.total_estimated_value_usd} USD
+                                                            </p>
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </div>
-                                        )}
-
-                                        {policy.type === 'crypto' && (
-                                            <div>
-                                                <h6>Детали криптовалюты:</h6>
-                                                {policy.details.crypto_assets.length > 0 ? (
-                                                    <ul>
-                                                        {policy.details.crypto_assets.map((asset, index) => (
-                                                            <li key={index}>
-                                                                <p><strong>Сумма:</strong> {asset.amount} {asset.currency}</p>
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                ) : (
-                                                    <p>Нет криптовалютных активов.</p>
-                                                )}
-                                                <p><strong>Общая оценочная стоимость (USD):</strong> {policy.details.total_estimated_value_usd} USD</p>
-                                            </div>
-                                        )}
-                                    </li>
+                                            <RequestAssessmentButton policyId={policy.id} />
+                                        </div>
+                                    </div>
                                 ))}
-                            </ul>
+                            </div>
                         )}
-                        <Link to="/client/create" className="btn btn-primary mt-4">Создать новый полис</Link>
                     </div>
                 </div>
             </div>

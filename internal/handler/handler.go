@@ -44,9 +44,6 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		}
 		policy := api.Group("/policy")
 		{
-			//policy.OPTIONS("/*any", func(c *gin.Context) {
-			//	c.Status(http.StatusNoContent)
-			//})
 			policy.POST("/", h.CreatePolicy)
 			policy.GET("/by-id/:id", h.GetPolicyById)
 			policy.GET("/user-token", h.GetAllPoliciesByUserToken)
@@ -61,11 +58,14 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			assessment.POST("/", h.CreateAssessmentRequestByToken)
 			assessment.GET("/by-id/:id", h.GetAssessmentById)
 			assessment.GET("/all", h.GetAllAssessments)
-			assessment.GET("user-token", h.GetAllAssessmentsByUserToken)
-			assessment.GET("user-id/:id", h.GetAllAssessmentsByUserId)
+			assessment.GET("/user-token", h.GetAllAssessmentsByUserToken)
+			assessment.GET("/user-id/:id", h.GetAllAssessmentsByUserId)
 			assessment.PUT("/add-assessor", h.AssignAssessorToAssessment)
 			assessment.PUT("/change-result/:id", h.ChangeResultAssessment)
 			assessment.DELETE("/:id", h.DeleteAssessmentById)
+			assessment.GET("/assessor-token", h.GetAllAssessmentsByAssessorToken)
+			assessment.GET("/assessor-id/:id", h.GetAllAssessmentsByAssessorId)
+			assessment.GET("/empty", h.GetAllPendingAssessments)
 		}
 	}
 

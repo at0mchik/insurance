@@ -113,3 +113,49 @@ func (s *AssessmentService) UpdateResultById(input entity.AssessmentResultUpdate
 func (s *AssessmentService) DeleteAssessmentById(assessmentId int) error {
 	return s.repo.DeleteAssessmentById(assessmentId)
 }
+
+func (s *AssessmentService) GetAllAssessmentByAssessorId(userId int) ([]entity.AssessmentRequestResponse, error) {
+	requests, results, err := s.repo.GetAllAssessmentByAssessorId(userId)
+	if err != nil {
+		return []entity.AssessmentRequestResponse{}, err
+	}
+
+	var assessmentResponse []entity.AssessmentRequestResponse
+	for i, request := range requests {
+		assessmentResponse = append(assessmentResponse,
+			entity.AssessmentRequestResponse{
+				Id:          request.Id,
+				ClientId:    request.ClientId,
+				PolicyId:    request.PolicyId,
+				AssessorId:  request.AssessorId,
+				RequestDate: request.RequestDate.Format("2006-01-02"),
+				Status:      request.Status,
+				Result:      results[i],
+			})
+	}
+
+	return assessmentResponse, nil
+}
+
+func (s *AssessmentService) GetAllPendingAssessments() ([]entity.AssessmentRequestResponse, error) {
+	requests, results, err := s.repo.GetAllPendingAssessments()
+	if err != nil {
+		return []entity.AssessmentRequestResponse{}, err
+	}
+
+	var assessmentResponse []entity.AssessmentRequestResponse
+	for i, request := range requests {
+		assessmentResponse = append(assessmentResponse,
+			entity.AssessmentRequestResponse{
+				Id:          request.Id,
+				ClientId:    request.ClientId,
+				PolicyId:    request.PolicyId,
+				AssessorId:  request.AssessorId,
+				RequestDate: request.RequestDate.Format("2006-01-02"),
+				Status:      request.Status,
+				Result:      results[i],
+			})
+	}
+
+	return assessmentResponse, nil
+}
