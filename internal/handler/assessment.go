@@ -26,7 +26,7 @@ func (h *Handler) CreateAssessmentRequestByToken(c *gin.Context) {
 		return
 	}
 
-	id, err := h.services.Assessment.CreateAssessment(userId, input)
+	id, err := h.Services.Assessment.CreateAssessment(userId, input)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -55,7 +55,7 @@ func (h *Handler) GetAssessmentById(c *gin.Context) {
 		return
 	}
 
-	assessmentResponse, err := h.services.Assessment.GetAssessmentById(id)
+	assessmentResponse, err := h.Services.Assessment.GetAssessmentById(id)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -85,7 +85,7 @@ func (h *Handler) GetAllAssessments(c *gin.Context) {
 		return
 	}
 
-	assessmentResponse, err := h.services.Assessment.GetAllAssessment()
+	assessmentResponse, err := h.Services.Assessment.GetAllAssessment()
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -108,7 +108,7 @@ func (h *Handler) GetAllAssessmentsByUserToken(c *gin.Context) {
 		return
 	}
 
-	assessmentResponse, err := h.services.Assessment.GetAllAssessmentByUserId(userId)
+	assessmentResponse, err := h.Services.Assessment.GetAllAssessmentByUserId(userId)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -137,7 +137,7 @@ func (h *Handler) GetAllAssessmentsByUserId(c *gin.Context) {
 		return
 	}
 
-	assessmentResponse, err := h.services.Assessment.GetAllAssessmentByUserId(id)
+	assessmentResponse, err := h.Services.Assessment.GetAllAssessmentByUserId(id)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -170,7 +170,7 @@ func (h *Handler) AssignAssessorToAssessment(c *gin.Context) {
 		input.AssessorId = userId
 	}
 
-	err = h.services.Assessment.AddAssessorToAssessment(input)
+	err = h.Services.Assessment.AddAssessorToAssessment(input)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -203,7 +203,7 @@ func (h *Handler) ChangeResultAssessment(c *gin.Context) {
 		return
 	}
 
-	assessment, err := h.services.Assessment.GetAssessmentById(assessmentId)
+	assessment, err := h.Services.Assessment.GetAssessmentById(assessmentId)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -218,7 +218,7 @@ func (h *Handler) ChangeResultAssessment(c *gin.Context) {
 		return
 	}
 
-	err = h.services.Assessment.UpdateResultById(input, assessmentId)
+	err = h.Services.Assessment.UpdateResultById(input, assessmentId)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -245,7 +245,7 @@ func (h *Handler) DeleteAssessmentById(c *gin.Context) {
 		return
 	}
 
-	err = h.services.Assessment.DeleteAssessmentById(assessmentId)
+	err = h.Services.Assessment.DeleteAssessmentById(assessmentId)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -266,7 +266,7 @@ func (h *Handler) GetAllAssessmentsByAssessorToken(c *gin.Context) {
 		return
 	}
 
-	assessmentResponse, err := h.services.Assessment.GetAllAssessmentByAssessorId(userId)
+	assessmentResponse, err := h.Services.Assessment.GetAllAssessmentByAssessorId(userId)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -295,7 +295,7 @@ func (h *Handler) GetAllAssessmentsByAssessorId(c *gin.Context) {
 		return
 	}
 
-	assessmentResponse, err := h.services.Assessment.GetAllAssessmentByAssessorId(assessorId)
+	assessmentResponse, err := h.Services.Assessment.GetAllAssessmentByAssessorId(assessorId)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -318,7 +318,7 @@ func (h *Handler) GetAllPendingAssessments(c *gin.Context) {
 		return
 	}
 
-	assessmentResponse, err := h.services.Assessment.GetAllPendingAssessments()
+	assessmentResponse, err := h.Services.Assessment.GetAllPendingAssessments()
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return

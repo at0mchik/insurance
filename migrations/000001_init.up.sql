@@ -38,7 +38,7 @@ CREATE TABLE assessment_requests
 (
     id           serial not null unique,
     client_id    INT    NOT NULL REFERENCES users (id),
-    policy_id    INT    NOT NULL unique REFERENCES policies (id),
+    policy_id    INT    NOT NULL REFERENCES policies (id),
     assessor_id  INT    REFERENCES users (id),
     request_date DATE   NOT NULL,
     status       VARCHAR(20)

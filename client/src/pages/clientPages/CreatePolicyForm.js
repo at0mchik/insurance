@@ -462,7 +462,7 @@ export default function CreatePolicyPage() {
                             <option value="car">Машина</option>
                             <option value="apartment">Апартаменты</option>
                             <option value="health">Здоровье</option>
-                            <option value="crypto">Крипта</option>
+                            <option value="crypto">Криптовалютный кошелек</option>
                         </select>
                     </div>
 

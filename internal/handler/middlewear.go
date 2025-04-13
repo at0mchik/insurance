@@ -111,3 +111,5 @@ func getUserCtx(c *gin.Context) (int, string, error) {
 
 	return idInt, roleStr, nil
 }
+
+var GetUserCtxExport = getUserCtx

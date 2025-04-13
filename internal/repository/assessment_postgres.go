@@ -16,6 +16,14 @@ func NewAssessmentPostgres(db *sqlx.DB) *AssessmentPostgres {
 }
 
 func (r *AssessmentPostgres) CreateAssessment(request entity.AssessmentRequest, result entity.AssessmentResultInput) (int, error) {
+	queryCheck := fmt.Sprintf(`SELECT status FROM %s WHERE policy_id = $1`, assessmentRequestTable)
+	var tempString string
+	err := r.db.Get(&tempString, queryCheck, request.PolicyId)
+
+	if tempString == entity.StatusPending {
+		return 0, fmt.Errorf("cant add new assessment: already got pending assessment on this policy")
+	}
+
 	tx, err := r.db.Begin()
 	if err != nil {
 		return 0, fmt.Errorf("failed to begin transaction: %w", err)
@@ -123,7 +131,7 @@ func (r *AssessmentPostgres) GetAllAssessment() ([]entity.AssessmentRequest, []e
 	for _, id := range assessmentsId {
 		request, result, err := r.GetAssessmentById(id)
 		if err != nil {
-			return []entity.AssessmentRequest{}, []entity.AssessmentResultResponse{}, fmt.Errorf("error while selecting assessment with id %d: %w", err, id)
+			return []entity.AssessmentRequest{}, []entity.AssessmentResultResponse{}, fmt.Errorf("error while selecting assessment with id %d: %w", id, err)
 		}
 		requests = append(requests, request)
 		results = append(results, result)
@@ -147,7 +155,7 @@ func (r *AssessmentPostgres) GetAllAssessmentByUserId(userId int) ([]entity.Asse
 	for _, id := range assessmentsId {
 		request, result, err := r.GetAssessmentById(id)
 		if err != nil {
-			return []entity.AssessmentRequest{}, []entity.AssessmentResultResponse{}, fmt.Errorf("error while selecting assessment with id %d: %w", err, id)
+			return []entity.AssessmentRequest{}, []entity.AssessmentResultResponse{}, fmt.Errorf("error while selecting assessment with id %d: %w", id, err)
 		}
 		requests = append(requests, request)
 		results = append(results, result)
@@ -232,7 +240,7 @@ func (r *AssessmentPostgres) GetAllAssessmentByAssessorId(userId int) ([]entity.
 	for _, id := range assessmentsId {
 		request, result, err := r.GetAssessmentById(id)
 		if err != nil {
-			return []entity.AssessmentRequest{}, []entity.AssessmentResultResponse{}, fmt.Errorf("error while selecting assessment with id %d: %w", err, id)
+			return []entity.AssessmentRequest{}, []entity.AssessmentResultResponse{}, fmt.Errorf("error while selecting assessment with id %d: %w", id, err)
 		}
 		requests = append(requests, request)
 		results = append(results, result)
@@ -258,7 +266,7 @@ func (r *AssessmentPostgres) GetAllPendingAssessments() ([]entity.AssessmentRequ
 	for _, id := range requestId {
 		request, result, err := r.GetAssessmentById(id)
 		if err != nil {
-			return []entity.AssessmentRequest{}, []entity.AssessmentResultResponse{}, fmt.Errorf("error while selecting assessment with id %d: %w", err, id)
+			return []entity.AssessmentRequest{}, []entity.AssessmentResultResponse{}, fmt.Errorf("error while selecting assessment with id %d: %w", id, err)
 		}
 
 		if request.Status == entity.StatusPending {

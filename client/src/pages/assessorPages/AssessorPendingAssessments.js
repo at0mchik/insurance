@@ -240,14 +240,14 @@ export default function AssessorPendingAssessments() {
 
                                     <button
                                         className="btn btn-info mt-3"
-                                        onClick={() => handleGetPolicyDetails(assessment.id)}
+                                        onClick={() => handleGetPolicyDetails(assessment.policy_id)}
                                     >
-                                        Получить полис #{assessment.id}
+                                        Получить полис #{assessment.policy_id}
                                     </button>
 
 
                                     {/* Отображение данных полиса, если его ID совпадает с ID заявки */}
-                                    {policyDetails && policyDetails.id === assessment.id && (
+                                    {policyDetails && policyDetails.id === assessment.policy_id && (
                                         renderPolicyDetails(policyDetails)
                                     )}
 

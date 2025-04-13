@@ -10,7 +10,7 @@ import (
 )
 
 func (h *Handler) CreateUser(c *gin.Context) {
-	_, role, err := getUserCtx(c)
+	_, role, err := h.GetUserCtx(c)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -28,7 +28,7 @@ func (h *Handler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	id, err := h.services.User.CreateUser(input)
+	id, err := h.Services.User.CreateUser(input)
 
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
@@ -45,7 +45,7 @@ type getAllUsersResponse struct {
 }
 
 func (h *Handler) GetAllUsers(c *gin.Context) {
-	_, role, err := getUserCtx(c)
+	_, role, err := h.GetUserCtx(c)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -56,7 +56,7 @@ func (h *Handler) GetAllUsers(c *gin.Context) {
 		return
 	}
 
-	users, err := h.services.User.GetAllUsers()
+	users, err := h.Services.User.GetAllUsers()
 
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
@@ -69,7 +69,7 @@ func (h *Handler) GetAllUsers(c *gin.Context) {
 }
 
 func (h *Handler) GetUserByToken(c *gin.Context) {
-	userId, userRole, err := getUserCtx(c)
+	userId, userRole, err := h.GetUserCtx(c)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -80,7 +80,7 @@ func (h *Handler) GetUserByToken(c *gin.Context) {
 		return
 	}
 
-	user, err := h.services.User.GetUserById(userId)
+	user, err := h.Services.User.GetUserById(userId)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -90,7 +90,7 @@ func (h *Handler) GetUserByToken(c *gin.Context) {
 }
 
 func (h *Handler) GetUserById(c *gin.Context) {
-	_, role, err := getUserCtx(c)
+	_, role, err := h.GetUserCtx(c)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -107,7 +107,7 @@ func (h *Handler) GetUserById(c *gin.Context) {
 		return
 	}
 
-	user, err := h.services.User.GetUserById(id)
+	user, err := h.Services.User.GetUserById(id)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -117,7 +117,7 @@ func (h *Handler) GetUserById(c *gin.Context) {
 }
 
 func (h *Handler) DeleteUserById(c *gin.Context) {
-	userId, role, err := getUserCtx(c)
+	userId, role, err := h.GetUserCtx(c)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -134,7 +134,7 @@ func (h *Handler) DeleteUserById(c *gin.Context) {
 		return
 	}
 
-	if err := h.services.User.DeleteUserById(id); err != nil {
+	if err := h.Services.User.DeleteUserById(id); err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -143,7 +143,7 @@ func (h *Handler) DeleteUserById(c *gin.Context) {
 }
 
 func (h *Handler) UpdateUserById(c *gin.Context) {
-	userId, role, err := getUserCtx(c)
+	userId, role, err := h.GetUserCtx(c)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -166,7 +166,7 @@ func (h *Handler) UpdateUserById(c *gin.Context) {
 		return
 	}
 
-	if err := h.services.UpdateUserById(id, input); err != nil {
+	if err := h.Services.UpdateUserById(id, input); err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}

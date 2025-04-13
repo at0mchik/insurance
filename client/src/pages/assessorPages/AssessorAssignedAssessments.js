@@ -154,6 +154,7 @@ export default function AssessorAssignedAssessments() {
         }
 
         try {
+            console.log('fetching')
             const response = await fetch(`http://localhost:8000/api/policy/by-id/${policyId}`, {
                 method: 'GET',
                 headers: {
@@ -290,14 +291,14 @@ export default function AssessorAssignedAssessments() {
 
                                     <button
                                         className="btn btn-info mt-3"
-                                        onClick={() => handleGetPolicyDetails(req.id)}
+                                        onClick={() => handleGetPolicyDetails(req.policy_id)}
                                     >
-                                        Получить полис #{req.id}
+                                        Получить полис #{req.policy_id}
                                     </button>
 
 
                                     {/* Отображение данных полиса, если его ID совпадает с ID заявки */}
-                                    {policyDetails && policyDetails.id === req.id && (
+                                    {policyDetails && policyDetails.id === req.policy_id && (
                                         renderPolicyDetails(policyDetails)
                                     )}
 

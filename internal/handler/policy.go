@@ -27,7 +27,7 @@ func (h *Handler) CreatePolicy(c *gin.Context) {
 		return
 	}
 
-	id, err := h.services.Policy.CreatePolicy(userId, input)
+	id, err := h.Services.Policy.CreatePolicy(userId, input)
 
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
@@ -55,7 +55,7 @@ func (h *Handler) GetAllPoliciesByUserToken(c *gin.Context) {
 		return
 	}
 
-	policyResponse, err := h.services.Policy.GetAllPolicyByUserId(userId)
+	policyResponse, err := h.Services.Policy.GetAllPolicyByUserId(userId)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -84,7 +84,7 @@ func (h *Handler) GetAllPoliciesByUserId(c *gin.Context) {
 		return
 	}
 
-	policyResponse, err := h.services.Policy.GetAllPolicyByUserId(id)
+	policyResponse, err := h.Services.Policy.GetAllPolicyByUserId(id)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -107,7 +107,7 @@ func (h *Handler) GetAllPolicies(c *gin.Context) {
 		return
 	}
 
-	policyResponse, err := h.services.Policy.GetAllPolicies()
+	policyResponse, err := h.Services.Policy.GetAllPolicies()
 
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
@@ -137,7 +137,7 @@ func (h *Handler) GetPolicyById(c *gin.Context) {
 		return
 	}
 
-	policyResponse, err := h.services.GetPolicyById(policyId)
+	policyResponse, err := h.Services.GetPolicyById(policyId)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -174,7 +174,7 @@ func (h *Handler) UpdatePolicyById(c *gin.Context) {
 		return
 	}
 
-	policy, err := h.services.GetPolicyById(policyId)
+	policy, err := h.Services.GetPolicyById(policyId)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -184,7 +184,7 @@ func (h *Handler) UpdatePolicyById(c *gin.Context) {
 		return
 	}
 
-	if err := h.services.UpdatePolicyById(policyId, input); err != nil {
+	if err := h.Services.UpdatePolicyById(policyId, input); err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -211,7 +211,7 @@ func (h *Handler) DeletePolicyById(c *gin.Context) {
 		return
 	}
 
-	policy, err := h.services.GetPolicyById(policyId)
+	policy, err := h.Services.GetPolicyById(policyId)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -221,7 +221,7 @@ func (h *Handler) DeletePolicyById(c *gin.Context) {
 		return
 	}
 
-	if err := h.services.DeletePolicyById(policyId); err != nil {
+	if err := h.Services.DeletePolicyById(policyId); err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}

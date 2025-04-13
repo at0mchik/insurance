@@ -30,11 +30,14 @@ type Config struct {
 }
 
 func initConfig(configPath string) error {
-	pathSplit := strings.Split(configPath, "/")
+	pathSplit := strings.Split(configPath, ".")
+
+	logrus.Info("config path: ", pathSplit)
 
 	viper.SetConfigType("yaml")
-	viper.AddConfigPath(pathSplit[0])
-	viper.SetConfigName(pathSplit[1])
+	viper.SetConfigFile(configPath)
+	//viper.AddConfigPath(pathSplit[0])
+	//viper.SetConfigName(pathSplit[1])
 	return viper.ReadInConfig()
 }
 
@@ -47,7 +50,7 @@ func GetConfig(configPath string) *Config {
 		instance = &Config{}
 
 		if err := initConfig(configPath); err != nil {
-			logrus.Fatal("error initializing configs: %s", err.Error())
+			logrus.Fatalf("error initializing configs: %s", err.Error())
 		}
 
 		logrus.Infof("read env file: %s", configPath)

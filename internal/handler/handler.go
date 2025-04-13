@@ -8,11 +8,15 @@ import (
 )
 
 type Handler struct {
-	services *service.Service
+	Services   *service.Service
+	GetUserCtx func(c *gin.Context) (int, string, error)
 }
 
-func NewHandler(services *service.Service) *Handler {
-	return &Handler{services: services}
+func NewHandler(Services *service.Service) *Handler {
+	return &Handler{
+		Services:   Services,
+		GetUserCtx: GetUserCtxExport,
+	}
 }
 
 func (h *Handler) InitRoutes() *gin.Engine {
