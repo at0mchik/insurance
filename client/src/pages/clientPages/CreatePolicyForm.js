@@ -323,7 +323,7 @@ export default function CreatePolicyPage() {
                             Добавить криптоактив
                         </button>
                         <div className="mb-3">
-                            <label className="form-label">Общая оценочная стоимость (USD)</label>
+                            <label className="form-label">Общая оценочная стоимость</label>
                             <input
                                 type="number"
                                 className="form-control"

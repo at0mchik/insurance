@@ -181,6 +181,19 @@ export default function AssessorAssignedAssessments() {
         }
     };
 
+    const getBorderStatusStyle = (status) => {
+        switch (status) {
+            case 'pending':
+                return 'border-warning card mb-3';
+            case 'ready':
+                return 'border-success card mb-3';
+            case 'cancelled':
+                return 'border-danger card mb-3';
+            default:
+                return 'border-light card mb-3';
+        }
+    };
+
     // Функция для рендеринга данных полиса в зависимости от типа
     const renderPolicyDetails = (policy) => {
         if (!policy) return null;
@@ -245,8 +258,7 @@ export default function AssessorAssignedAssessments() {
                             ) : (
                                 <p>Нет криптовалютных активов.</p>
                             )}
-                            <p><strong>Общая оценочная стоимость
-                                (USD):</strong> {policy.details.total_estimated_value_usd} USD</p>
+                            <p><strong>Общая оценочная стоимость: </strong> {policy.details.total_estimated_value_usd}</p>
                         </div>
                     )}
                 </div>
@@ -271,7 +283,7 @@ export default function AssessorAssignedAssessments() {
                         {requests.map((req) => (
                             <div
                                 key={req.id}
-                                className={`card mb-3 ${req.status === 'cancelled' ? 'border-danger' : ''}`}
+                                className={getBorderStatusStyle(req.status)}
                             >
                                 <div className="card-body position-relative">
                                     <h5 className="card-title">
@@ -283,7 +295,7 @@ export default function AssessorAssignedAssessments() {
 
                                     {req.status === 'ready' && req.result?.value > 0 && (
                                         <>
-                                            <p><strong>Оценка:</strong> {req.result.value} USD</p>
+                                            <p><strong>Оценка:</strong> {req.result.value}</p>
                                             <p><strong>Комментарий:</strong> {req.result.result_text}</p>
                                             <p><strong>Дата оценки:</strong> {req.result.result_date}</p>
                                         </>

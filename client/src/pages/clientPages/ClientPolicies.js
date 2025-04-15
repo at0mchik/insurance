@@ -211,8 +211,8 @@ export default function ClientPolicies() {
                                                             ) : (
                                                                 <p>Нет криптовалютных активов.</p>
                                                             )}
-                                                            <p><strong>Общая оценочная стоимость
-                                                                (USD):</strong> {policy.details.total_estimated_value_usd} USD
+                                                            <p><strong>Общая оценочная стоимость:
+                                                            </strong> {policy.details.total_estimated_value_usd}
                                                             </p>
                                                         </div>
                                                     )}
