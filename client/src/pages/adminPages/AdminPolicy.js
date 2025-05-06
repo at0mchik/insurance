@@ -1,12 +1,12 @@
 import React from 'react';
-import Header from '../components/Header';
+import Header from '../../components/Header';
 
-export default function AdminPage() {
+export default function AdminPolicy() {
     return (
         <div>
             <Header role="admin" />
             <div className="container mt-3">
-                <h2>Админ панель</h2>
+                <h2>Панель полисов</h2>
 
             </div>
         </div>

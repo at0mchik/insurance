@@ -11,8 +11,11 @@ import ClientPolicies from "./pages/clientPages/ClientPolicies";
 import AccountPage from "./components/AccountPage";
 import AssessorPendingAssessments from "./pages/assessorPages/AssessorPendingAssessments";
 import AssessorAssignedAssessments from "./pages/assessorPages/AssessorAssignedAssessments";
-import AdminPage from "./pages/AdminPage";
+import AdminMain from "./pages/adminPages/AdminMain";
 import CreatePolicyPage from "./pages/clientPages/CreatePolicyForm";
+import AdminUser from "./pages/adminPages/AdminUser";
+import AdminPolicy from "./pages/adminPages/AdminPolicy";
+import AdminAssessment from "./pages/adminPages/AdminAssessment";
 
 function App() {
     return (
@@ -31,10 +34,34 @@ function App() {
                     }
                 />
                 <Route
-                    path="/admin/panel"
+                    path="/admin/main"
                     element={
                         <ProtectedRoute allowedRoles={['admin']}>
-                            <AdminPage />
+                            <AdminMain />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/admin/user"
+                    element={
+                        <ProtectedRoute allowedRoles={['admin']}>
+                            <AdminUser />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/admin/policy"
+                    element={
+                        <ProtectedRoute allowedRoles={['admin']}>
+                            <AdminPolicy />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/admin/assessment"
+                    element={
+                        <ProtectedRoute allowedRoles={['admin']}>
+                            <AdminAssessment />
                         </ProtectedRoute>
                     }
                 />

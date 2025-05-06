@@ -31,7 +31,7 @@ export default function Login() {
 
                 switch (decoded.user_role) {
                     case 'admin':
-                        navigate('/admin/panel');
+                        navigate('/admin/main');
                         break;
                     case 'client':
                         navigate('/client/policies');

@@ -7,7 +7,9 @@ export default function Header({role}) {
             case 'admin':
                 return (
                     <>
-                        <Link to="/admin/panel" className="nav-link">Админ панель</Link>
+                        <Link to="/admin/user" className="nav-link">Пользователи</Link>
+                        <Link to="/admin/policy" className="nav-link">Полисы</Link>
+                        <Link to="/admin/assessment" className="nav-link">Заявки</Link>
                         <Link to="/admin/account" className="nav-link">Аккаунт</Link>
                     </>
                 );
