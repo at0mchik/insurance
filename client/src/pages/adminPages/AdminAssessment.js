@@ -14,7 +14,7 @@ export default function AdminAssessment() {
     };
 
     const handleExecute = async () => {
-        let url = 'http://localhost:8000/api/assessment/';
+        let url = 'http://localhost:8080/api/assessment/';
         let options = {
             headers: {
                 'Content-Type': 'application/json',

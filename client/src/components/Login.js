@@ -18,7 +18,7 @@ export default function Login() {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch("http://localhost:8000/api/auth/sign-in", {
+            const res = await fetch("http://localhost:8080/api/auth/sign-in", {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password })

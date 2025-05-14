@@ -23,7 +23,7 @@ export default function AssessorAssignedAssessments() {
             }
 
             try {
-                const response = await fetch('http://localhost:8000/api/assessment/assessor-token', {
+                const response = await fetch('http://localhost:8080/api/assessment/assessor-token', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -81,7 +81,7 @@ export default function AssessorAssignedAssessments() {
         if (!confirmation) return;
 
         try {
-            const response = await fetch(`http://localhost:8000/api/assessment/change-result/${id}`, {
+            const response = await fetch(`http://localhost:8080/api/assessment/change-result/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -116,7 +116,7 @@ export default function AssessorAssignedAssessments() {
         }
 
         try {
-            const response = await fetch(`http://localhost:8000/api/assessment/change-result/${id}`, {
+            const response = await fetch(`http://localhost:8080/api/assessment/change-result/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -155,7 +155,7 @@ export default function AssessorAssignedAssessments() {
 
         try {
             console.log('fetching')
-            const response = await fetch(`http://localhost:8000/api/policy/by-id/${policyId}`, {
+            const response = await fetch(`http://localhost:8080/api/policy/by-id/${policyId}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,

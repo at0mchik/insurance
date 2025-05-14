@@ -20,7 +20,7 @@ export default function AdminPolicy() {
     };
 
     const handleExecute = async () => {
-        let url = 'http://localhost:8000/api/policy/';
+        let url = 'http://localhost:8080/api/policy/';
         let options = {
             headers: {
                 'Content-Type': 'application/json',

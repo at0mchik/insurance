@@ -19,7 +19,7 @@ export default function RequestAssessmentButton({ policyId }) {
         setSuccess(null);
 
         try {
-            const response = await fetch('http://localhost:8000/api/assessment/', {
+            const response = await fetch('http://localhost:8080/api/assessment/', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,

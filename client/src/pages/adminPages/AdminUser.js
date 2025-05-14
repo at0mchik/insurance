@@ -20,7 +20,7 @@ export default function AdminUser() {
     };
 
     const handleExecute = async () => {
-        let url = 'http://localhost:8000/api/user/';
+        let url = 'http://localhost:8080/api/user/';
         let options = {
             headers: {
                 'Content-Type': 'application/json',

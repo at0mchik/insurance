@@ -16,7 +16,7 @@ export default function ClientAssessments() {
             }
 
             try {
-                const response = await fetch('http://localhost:8000/api/assessment/user-token', {
+                const response = await fetch('http://localhost:8080/api/assessment/user-token', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -75,7 +75,7 @@ export default function ClientAssessments() {
         const today = new Date().toISOString().split('T')[0]; // формат YYYY-MM-DD
 
         try {
-            const response = await fetch(`http://localhost:8000/api/assessment/change-result/${requestId}`, {
+            const response = await fetch(`http://localhost:8080/api/assessment/change-result/${requestId}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,

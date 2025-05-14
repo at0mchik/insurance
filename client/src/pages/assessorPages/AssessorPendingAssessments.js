@@ -20,7 +20,7 @@ export default function AssessorPendingAssessments() {
             }
 
             try {
-                const response = await fetch('http://localhost:8000/api/assessment/empty', {
+                const response = await fetch('http://localhost:8080/api/assessment/empty', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -64,7 +64,7 @@ export default function AssessorPendingAssessments() {
         if (!confirmation) return;
 
         try {
-            const response = await fetch(`http://localhost:8000/api/assessment/add-assessor`, {
+            const response = await fetch(`http://localhost:8080/api/assessment/add-assessor`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -96,7 +96,7 @@ export default function AssessorPendingAssessments() {
         }
 
         try {
-            const response = await fetch(`http://localhost:8000/api/policy/by-id/${policyId}`, {
+            const response = await fetch(`http://localhost:8080/api/policy/by-id/${policyId}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,

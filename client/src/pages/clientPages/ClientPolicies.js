@@ -24,7 +24,7 @@ export default function ClientPolicies() {
             }
 
             try {
-                const response = await fetch('http://localhost:8000/api/policy/user-token', {
+                const response = await fetch('http://localhost:8080/api/policy/user-token', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -62,7 +62,7 @@ export default function ClientPolicies() {
         if (!confirmDelete) return;
 
         try {
-            const response = await fetch(`http://localhost:8000/api/policy/${policyId}`, {
+            const response = await fetch(`http://localhost:8080/api/policy/${policyId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -94,7 +94,7 @@ export default function ClientPolicies() {
 
         formData.premium = parseInt(formData.premium)
         try {
-            const response = await fetch(`http://localhost:8000/api/policy/${policyId}`, {
+            const response = await fetch(`http://localhost:8080/api/policy/${policyId}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,

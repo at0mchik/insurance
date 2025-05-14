@@ -15,7 +15,7 @@ export default function AccountPage() {
             return;
         }
 
-        fetch("http://localhost:8000/api/user/by-token", {
+        fetch("http://localhost:8080/api/user/by-token", {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -46,7 +46,7 @@ export default function AccountPage() {
         if (!window.confirm('Вы уверены, что хотите удалить аккаунт? Это действие необратимо.')) return;
 
         try {
-            const res = await fetch(`http://localhost:8000/api/user/${user.id}`, {
+            const res = await fetch(`http://localhost:8080/api/user/${user.id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -80,7 +80,7 @@ export default function AccountPage() {
             if (editData.age !== "") updatedFields.age = parseInt(editData.age);
             if (editData.info !== "") updatedFields.info = editData.info;
 
-            const res = fetch(`http://localhost:8000/api/user/${user.id}`, {
+            const res = fetch(`http://localhost:8080/api/user/${user.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

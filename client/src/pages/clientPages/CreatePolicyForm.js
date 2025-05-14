@@ -424,7 +424,7 @@ export default function CreatePolicyPage() {
         console.log("fetching: " + JSON.stringify(dataToSend))
 
 
-        fetch("http://localhost:8000/api/policy/", {
+        fetch("http://localhost:8080/api/policy/", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
